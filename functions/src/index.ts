@@ -18,16 +18,13 @@ const client = new AppSearchClient(
   () => `${config.appSearchLocation}/api/as/v1/`
 );
 
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
-//
-// TODO This could be come the search function evenually
-// What of search should be supported? Do we support filtering? Can users do a full search including faceting and filter? That would let them use search-ui
-// However, that would mean they'd need to add those fields to the index, and I'm not sure if we'd want to do that or not? Perhaps it's better just to support
-// queries on a single field
-export const helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info("Hello logs!", { structuredData: true });
-  response.send("Hello from Firebase!");
+export const search = functions.https.onRequest(async (request, response) => {
+  const query = request.query?.query;
+  const searchResponse = await client.search(
+    config.appSearchEngineName,
+    query || ""
+  );
+  response.send(searchResponse);
 });
 
 // TODO handle nested fields
@@ -37,7 +34,7 @@ exports.shipToElastic = functions.firestore
   .document(`/${config.collectionName}/{documentId}`)
   .onWrite(async (change) => {
     if (change.before.exists === false) {
-      // TODO Consider log levels
+      // TODO Consider log levels... functions.logger.info("Hello logs!", { structuredData: true });
       console.log(`Creating document: ${change.after.id}`);
       client.indexDocuments(config.appSearchEngineName, [
         {

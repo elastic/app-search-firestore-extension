@@ -54,3 +54,5 @@ TODO: This section can be removed once the extension is configurable
 ## Set up a test collection locally
 
 In the Firestore emulator, create a collection called "pokemon" and add a document to it. That document should be syned to your App Search instance.
+
+Also, try querying App Search via the search endpoint: http://localhost:5001/pokemon-de597/us-central1/search?query=pikachu
