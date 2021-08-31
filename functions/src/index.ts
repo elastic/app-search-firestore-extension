@@ -30,9 +30,12 @@ export const search = functions.https.onRequest(async (request, response) => {
 // TODO handle nested fields
 // TODO handle only index specified fields
 // TODO index data with correct types? ... that depends on if we want filtering...
-exports.shipToElastic = functions.firestore
-  .document(`/${config.collectionName}/{documentId}`)
-  .onWrite(async (change) => {
+// Note that in extensions, functions get declared slightly differently then typical extensions:
+// https://firebase.google.com/docs/extensions/alpha/construct-functions#firestore
+// Also note that tyipcally in a function you specify the path in the call to `document` like `/${config.collectionName}/{documentId}`.
+// In an extension, the path is specified in extension.yaml, in eventTrigger.
+exports.shipToElastic = functions.handler.firestore.document.onWrite(
+  async (change) => {
     if (change.before.exists === false) {
       // TODO Consider log levels... functions.logger.info("Hello logs!", { structuredData: true });
       console.log(`Creating document: ${change.after.id}`);
@@ -55,4 +58,5 @@ exports.shipToElastic = functions.firestore
       ]);
     }
     return change.after;
-  });
+  }
+);

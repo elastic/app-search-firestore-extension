@@ -1,0 +1,122 @@
+# Learn detailed information about the fields of an extension.yaml file in the docs:
+# https://firebase.google.com/docs/extensions/alpha/ref-extension-yaml
+
+name: elastic-app-search # Identifier for your extension
+version: 0.0.1 # Follow semver versioning
+specVersion: v1beta # Version of the Firebase Extensions specification
+
+# Friendly display name for your extension (~3-5 words)
+displayName: Elastic App Search
+
+# Brief description of the task your extension performs (~1 sentence)
+description: >-
+  Syncs documents from a Firestore collection to Elastic App Search to enable full-text search.
+
+license: Apache-2.0 # https://spdx.org/licenses/
+
+author:
+  authorName: Elastic
+  url: https://www.elastic.co/
+
+# Public URL for the source code of your extension
+sourceUrl: https://github.com/elastic/firebase-app-search-extension
+
+# Specify whether a paid-tier billing plan is required to use your extension.
+# Learn more in the docs: https://firebase.google.com/docs/extensions/alpha/ref-extension-yaml#billing-required-field
+billingRequired: true
+
+# In an `apis` field, list any Google APIs (like Cloud Translation, BigQuery, etc.)
+# required for your extension to operate.
+# TODO
+# Learn more in the docs: https://firebase.google.com/docs/extensions/alpha/ref-extension-yaml#apis-field
+
+# In a `roles` field, list any IAM access roles required for your extension to operate.
+# Learn more in the docs: https://firebase.google.com/docs/extensions/alpha/ref-extension-yaml#roles-field
+roles:
+  - role: datastore.user
+    reason: Allows the extension to read configuration and build bundles from Firestore.
+
+# In the `resources` field, list each of your extension's functions, including the trigger for each function.
+# Learn more in the docs: https://firebase.google.com/docs/extensions/alpha/ref-extension-yaml#resources-field
+resources:
+  - name: shipToElastic
+    type: firebaseextensions.v1beta.function
+    description: >-
+      Function triggered on Create, Update, or Delete of a document in the specified collection which syncs the change to App Search.
+    properties:
+      # LOCATION is a user-configured parameter value specified by the user during installation.
+      location: ${LOCATION}
+      # https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations.functions#EventTrigger
+      eventTrigger:
+        # Various event types for Firestore are listed here: https://firebase.google.com/docs/extensions/alpha/construct-functions
+        eventType: providers/cloud.firestore/eventTypes/document.write
+        # TODO Where does PROJECT_ID come from?
+        # Note, the id is a wildcard path parameter, which can be read from the collection
+        # https://firebase.google.com/docs/firestore/extend-with-functions#wildcards-parameters
+        resource: projects/${PROJECT_ID}/databases/(default)/documents/${COLLECTION_PATH}/{documentId}
+      runtime: "nodejs14"
+
+# In the `params` field, set up your extension's user-configured parameters.
+# Learn more in the docs: https://firebase.google.com/docs/extensions/alpha/ref-extension-yaml#params-field
+# TODO We need more params here
+params:
+  - param: COLLECTION_PATH
+    label: Collection path
+    description: >
+      What is the path to the collection that you wish to sync to App Search?
+    example: extractedText
+    validationRegex: "^[^/]+(/[^/]+/[^/]+)*$"
+    validationErrorMessage: Must be a valid Cloud Firestore Collection
+    default: extractedText
+    required: true
+
+  - param: LOCATION
+    label: Cloud Functions location
+    description: >-
+      Where do you want to deploy the functions created for this extension?
+      For help selecting a location, refer to the [location selection
+      guide](https://firebase.google.com/docs/functions/locations).
+    type: select
+    options:
+      - label: Iowa (us-central1)
+        value: us-central1
+      - label: South Carolina (us-east1)
+        value: us-east1
+      - label: Northern Virginia (us-east4)
+        value: us-east4
+      - label: Los Angeles (us-west2)
+        value: us-west2
+      - label: Salt Lake City (us-west3)
+        value: us-west3
+      - label: Las Vegas (us-west4)
+        value: us-west4
+      - label: Warsaw (europe-central2)
+        value: europe-central2
+      - label: Belgium (europe-west1)
+        value: europe-west1
+      - label: London (europe-west2)
+        value: europe-west2
+      - label: Frankfurt (europe-west3)
+        value: europe-west3
+      - label: Zurich (europe-west6)
+        value: europe-west6
+      - label: Hong Kong (asia-east2)
+        value: asia-east2
+      - label: Tokyo (asia-northeast1)
+        value: asia-northeast1
+      - label: Osaka (asia-northeast2)
+        value: asia-northeast2
+      - label: Seoul (asia-northeast3)
+        value: asia-northeast3
+      - label: Mumbai (asia-south1)
+        value: asia-south1
+      - label: Jakarta (asia-southeast2)
+        value: asia-southeast2
+      - label: Montreal (northamerica-northeast1)
+        value: northamerica-northeast1
+      - label: Sao Paulo (southamerica-east1)
+        value: southamerica-east1
+      - label: Sydney (australia-southeast1)
+        value: australia-southeast1
+    required: true
+    immutable: true
