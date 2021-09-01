@@ -31,8 +31,7 @@ cd functions && npm install
 
 1. Set up and run App Search locally.
 2. Create a new empty engine called 'pokemon'
-   TODO: This section can be removed once the extension is configurable
-3. In functions/index.ts, change the 'appSearchAPIKey' configuration to use
+3. In the next section, you'll add the connection details from this instance to `test-params.env`.
 
 ## Run locally inside of a test project (emulated environment)
 

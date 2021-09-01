@@ -42,7 +42,8 @@ resources:
   - name: shipToElastic
     type: firebaseextensions.v1beta.function
     description: >-
-      Function triggered on Create, Update, or Delete of a document in the specified collection which syncs the change to App Search.
+      Function triggered on Create, Update, or Delete of a document in the specified collection which syncs the change 
+      to App Search.
     properties:
       # LOCATION is a user-configured parameter value specified by the user during installation.
       location: ${LOCATION}
@@ -50,7 +51,7 @@ resources:
       eventTrigger:
         # Various event types for Firestore are listed here: https://firebase.google.com/docs/extensions/alpha/construct-functions
         eventType: providers/cloud.firestore/eventTypes/document.write
-        # TODO Where does PROJECT_ID come from?
+        # Parameters like PROJECT_ID are autopopulated: https://firebase.google.com/docs/extensions/alpha/parameters#auto-populated-parameters
         # Note, the id is a wildcard path parameter, which can be read from the collection
         # https://firebase.google.com/docs/firestore/extend-with-functions#wildcards-parameters
         resource: projects/${PROJECT_ID}/databases/(default)/documents/${COLLECTION_PATH}/{documentId}
@@ -64,10 +65,40 @@ params:
     label: Collection path
     description: >
       What is the path to the collection that you wish to sync to App Search?
-    example: extractedText
+    example: movies
     validationRegex: "^[^/]+(/[^/]+/[^/]+)*$"
     validationErrorMessage: Must be a valid Cloud Firestore Collection
-    default: extractedText
+    required: true
+
+  - param: APP_SEARCH_ENGINE_NAME
+    label: Elastic App Search engine name
+    description: >
+      The "engine" within your Elastic App Search index this collection should be synced to.
+    example: movies
+    required: true
+
+  - param: APP_SEARCH_API_KEY
+    label: Elastic App Search private API key
+    description: >-
+      A "private" API key from your Elastic App Search deployment, with access to the specified engine.
+      Found in the "Credentials" section.
+    example: private-79iadc5dzd3qxgfgd9w9ryc7
+    required: true
+
+  - param: ENTERPRISE_SEARCH_URL
+    label: Elastic Enterprise Search URL
+    description: >
+      The base URL of your Enterprise Search deployment.
+    example: https://i-o-optimized-deployment-15c281.ent.us-west1.gcp.cloud.es.io/
+    required: true
+
+  # TODO Note which field types are indexable, and how to specify nested fields?
+  - param: INDEXED_FIELDS
+    label: Indexed fields
+    description: >-
+      Which fields from your collection would you like to sync to Elastic App Search? 
+      Only the fields provided will be searchable. Provide a comma separated list.
+    example: producer,director,year
     required: true
 
   - param: LOCATION
