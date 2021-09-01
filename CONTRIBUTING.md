@@ -92,6 +92,4 @@ In the Firestore emulator, create a collection called "pokemon" and add a docume
 
 You can check the logs to see if it ran in the "Logs" tab of the emulator.
 
-TODO: This url isn't quite right, we need to add an "api" for this to our extensions.yaml file to expose it and then figure out what the correct url is
-
 Also, try querying App Search via the search endpoint: http://localhost:5001/pokemon/us-central1/search?query=pikachu
