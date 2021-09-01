@@ -27,7 +27,6 @@ billingRequired: true
 
 # In an `apis` field, list any Google APIs (like Cloud Translation, BigQuery, etc.)
 # required for your extension to operate.
-# TODO
 # Learn more in the docs: https://firebase.google.com/docs/extensions/alpha/ref-extension-yaml#apis-field
 
 # In a `roles` field, list any IAM access roles required for your extension to operate.
@@ -55,6 +54,16 @@ resources:
         # Note, the id is a wildcard path parameter, which can be read from the collection
         # https://firebase.google.com/docs/firestore/extend-with-functions#wildcards-parameters
         resource: projects/${PROJECT_ID}/databases/(default)/documents/${COLLECTION_PATH}/{documentId}
+      runtime: "nodejs14"
+  - name: search
+    type: firebaseextensions.v1beta.function
+    description: >-
+      Function that exposes an endpoint which lets users search their collection that has been syned to Elastic App Search.
+    properties:
+      # LOCATION is a user-configured parameter value specified by the user during installation.
+      location: ${LOCATION}
+      # https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations.functions#EventTrigger
+      httpsTrigger: {}
       runtime: "nodejs14"
 
 # In the `params` field, set up your extension's user-configured parameters.
