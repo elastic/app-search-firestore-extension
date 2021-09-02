@@ -52,6 +52,13 @@ cd test_project
 firebase ext:dev:emulators:start --test-config=firebase.json --test-params=test-params.env --project=pokemon
 ```
 
+You can also start the project with data pre-seeded for our pokemon data set. In that case, provide the `--import` flag.
+
+```shell
+cd test_project
+firebase ext:dev:emulators:start --test-config=firebase.json --test-params=test-params.env --project=pokemon --import seed
+```
+
 Navigate to http://localhost:4000/
 
 This will run your local emulator with the extension installed.
