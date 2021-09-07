@@ -1,16 +1,12 @@
 import * as functions from "firebase-functions";
-//@ts-ignore There are no type definitions for this library
-import * as AppSearchClient from "@elastic/app-search-node";
 
-const client = new AppSearchClient(
-  undefined,
-  process.env.APP_SEARCH_API_KEY,
-  () => `${process.env.ENTERPRISE_SEARCH_URL}/api/as/v1/`
-);
+import { getNewAppSearchClient } from "./utils";
+
+const appSearchClient = getNewAppSearchClient();
 
 export const search = functions.https.onRequest(async (request, response) => {
   const query = request.query?.query;
-  const searchResponse = await client.search(
+  const searchResponse = await appSearchClient.search(
     process.env.APP_SEARCH_ENGINE_NAME,
     query || ""
   );
@@ -29,7 +25,7 @@ exports.shipToElastic = functions.handler.firestore.document.onWrite(
     if (change.before.exists === false) {
       // TODO Consider log levels... functions.logger.info("Hello logs!", { structuredData: true });
       console.log(`Creating document: ${change.after.id}`);
-      client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+      appSearchClient.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
         {
           id: change.after.id,
           ...change.after.data(),
@@ -37,12 +33,12 @@ exports.shipToElastic = functions.handler.firestore.document.onWrite(
       ]);
     } else if (change.after.exists === false) {
       console.log(`Deleting document: ${change.before.id}`);
-      client.destroyDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+      appSearchClient.destroyDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
         change.before.id,
       ]);
     } else {
       console.log(`Updating document: ${change.after.id}`);
-      client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+      appSearchClient.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
         {
           id: change.after.id,
           ...change.after.data(),
