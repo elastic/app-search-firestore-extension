@@ -36,7 +36,7 @@ node ./lib/bin/import.js
 To run against a cloud Firebase instance:
 
 ```
-GOOGLE_APPLICATION_CREDENTIALS=~/Downloads/app-search-extension-testing-firebase-adminsdk-asdfsa-fdasfdsa.json
+GOOGLE_APPLICATION_CREDENTIALS=~/Downloads/app-search-extension-testing-firebase-adminsdk-asdfsa-fdasfdsa.json \
 GCLOUD_PROJECT=test \
 COLLECTION_PATH=pokemon \
 INDEXED_FIELDS=name,number,url,image \
