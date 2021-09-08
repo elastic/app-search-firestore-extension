@@ -3,13 +3,13 @@
     "module": "commonjs",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "outDir": "lib",
+    "outDir": "functions/lib",
     "sourceMap": true,
     "strict": true,
     "target": "es2017"
   },
   "compileOnSave": true,
   "include": [
-    "src"
+    "functions/src"
   ]
 }

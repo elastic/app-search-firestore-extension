@@ -2,8 +2,6 @@
 
 ## Building the script
 
-All setup must be run from the directory `/app-search-firestore-extension/functions`
-
 Typescript must be compiled before we can run this script
 
 ```
