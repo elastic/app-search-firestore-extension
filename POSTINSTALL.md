@@ -12,7 +12,7 @@ https://firebase.google.com/docs/extensions/alpha/create-user-docs#writing-posti
 
 # Using the extension
 
-Make any create, update, or delete action in your Firestore, then visit your App Search instance at ${param: ENTERPRISE_SEARCH_URL} and see that your document has now been indexed.
+Make any create, update, or delete action in your Firestore, then visit your App Search instance at ${param:ENTERPRISE_SEARCH_URL} and see that your document has now been indexed.
 
 You can also visit ${function:search.url} to test out full-text search. Add a `q=<your query here>` to perform the search.
 
@@ -24,11 +24,11 @@ NOTE: In the future this will use an `npx` command with a published npm package 
 
 ```shell
 GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/serviceAccountKey.json \
-COLLECTION_PATH=${param: COLLECTION_PATH} \
-INDEXED_FIELDS=${param: INDEXED_FIELDS} \
-ENTERPRISE_SEARCH_URL=${param: ENTERPRISE_SEARCH_URL} \
-APP_SEARCH_API_KEY=${param: APP_SEARCH_API_KEY} \
-APP_SEARCH_ENGINE_NAME=${param: APP_SEARCH_ENGINE_NAME} \
+COLLECTION_PATH=${param:COLLECTION_PATH} \
+INDEXED_FIELDS=${param:INDEXED_FIELDS} \
+ENTERPRISE_SEARCH_URL=${param:ENTERPRISE_SEARCH_URL} \
+APP_SEARCH_API_KEY=${param:APP_SEARCH_API_KEY} \
+APP_SEARCH_ENGINE_NAME=${param:APP_SEARCH_ENGINE_NAME} \
 node ./lib/bin/import.js
 ```
 
