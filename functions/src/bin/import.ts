@@ -16,15 +16,19 @@ if (!collectionPath) {
 const indexedFields = (process.env.INDEXED_FIELDS || "").split(",");
 
 if (indexedFields.length === 0 || indexedFields[0].length === 0) {
-  throw Error("Error reading COLLECTION_PATH environment variable");
+  throw Error("Error reading INDEXED_FIELDS environment variable");
 }
 
 const batchSize = parseInt(process.env.BATCH_SIZE || "") || 50;
 
 const appSearchEngineName = process.env.APP_SEARCH_ENGINE_NAME;
 
+if (!appSearchEngineName) {
+  throw Error("Please provide a APP_SEARCH_ENGINE_NAME environment variable");
+}
+
 const main = async () => {
-  console.log(`Importing all documents from collection  ${collectionPath}`);
+  console.log(`Importing all documents from collection ${collectionPath}`);
 
   let collectionDocs: QueryDocumentSnapshot[] = [];
   let preparedDocs: Record<string, unknown>[];
