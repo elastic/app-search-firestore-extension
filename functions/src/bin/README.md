@@ -1,3 +1,51 @@
-COLLECTION_PATH=pokemon GOOGLE_APPLICATION_CREDENTIALS=~/Downloads/app-search-extension-testing-firebase-adminsdk-hwpfo-d3f7a6c26c.json  GCLOUD_PROJECT=pokemon node ./lib/bin/import.js
+# Setup
 
-COLLECTION_PATH=pokemon FIRESTORE_EMULATOR_HOST=localhost:8081 GCLOUD_PROJECT=test node ./lib/bin/import.js
+## Building the script
+
+All setup must be run from the directory `/app-search-firestore-extension/functions`
+
+Typescript must be compiled before we can run this script
+
+```
+cd ../.. # app-search-firestore-extension/functions
+npm run build
+
+```
+
+If you are developing the script you can add a `-- -w` flag to watch it
+
+```
+cd ../.. # app-search-firestore-extension/functions
+npm run build -- -w
+
+```
+
+## Running the script
+
+All scripts must be run from the directory `/app-search-firestore-extension/functions`, and only after building the script
+
+To run against a local Firebase emulator:
+
+```
+FIRESTORE_EMULATOR_HOST=localhost:8081 \
+GCLOUD_PROJECT=test \
+COLLECTION_PATH=pokemon \
+INDEXED_FIELDS=name,number,url,image \
+ENTERPRISE_SEARCH_URL=http://localhost:3002 \
+APP_SEARCH_API_KEY=private-asfdsaafdsagfsgfd \
+APP_SEARCH_ENGINE_NAME=pokemon \
+node ../lib/bin/import.js
+```
+
+To run against a cloud Firebase instance:
+
+```
+GOOGLE_APPLICATION_CREDENTIALS=~/Downloads/app-search-extension-testing-firebase-adminsdk-asdfsa-fdasfdsa.json
+GCLOUD_PROJECT=test \
+COLLECTION_PATH=pokemon \
+INDEXED_FIELDS=name,number,url,image \
+ENTERPRISE_SEARCH_URL=http://localhost:3002 \
+APP_SEARCH_API_KEY=private-asfdsaafdsagfsgfd \
+APP_SEARCH_ENGINE_NAME=pokemon \
+node ../lib/bin/import.js
+```
