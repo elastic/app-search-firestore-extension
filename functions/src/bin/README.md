@@ -7,17 +7,13 @@ All setup must be run from the directory `/app-search-firestore-extension/functi
 Typescript must be compiled before we can run this script
 
 ```
-cd ../.. # app-search-firestore-extension/functions
 npm run build
-
 ```
 
 If you are developing the script you can add a `-- -w` flag to watch it
 
 ```
-cd ../.. # app-search-firestore-extension/functions
 npm run build -- -w
-
 ```
 
 ## Running the script
@@ -34,7 +30,7 @@ INDEXED_FIELDS=name,number,url,image \
 ENTERPRISE_SEARCH_URL=http://localhost:3002 \
 APP_SEARCH_API_KEY=private-asfdsaafdsagfsgfd \
 APP_SEARCH_ENGINE_NAME=pokemon \
-node ../lib/bin/import.js
+node ./lib/bin/import.js
 ```
 
 To run against a cloud Firebase instance:
@@ -47,5 +43,5 @@ INDEXED_FIELDS=name,number,url,image \
 ENTERPRISE_SEARCH_URL=http://localhost:3002 \
 APP_SEARCH_API_KEY=private-asfdsaafdsagfsgfd \
 APP_SEARCH_ENGINE_NAME=pokemon \
-node ../lib/bin/import.js
+node ./lib/bin/import.js
 ```
