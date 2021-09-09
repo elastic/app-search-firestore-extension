@@ -44,7 +44,7 @@ Copy `test-params.env.example` to `test-params.env` and replace the values with 
 We have a project configured for use in a local emulation already under `/test_project`. The project is called "pokemon" and uses data set. You can read more about running an emulated environment for testing here [here](https://firebase.google.com/docs/emulator-suite) and [here](https://firebase.google.com/docs/extensions/alpha/test#emulator).
 
 ```shell
-npm run build -- -w # Typescript must be compiled before we can run them, and we'll watch (-w) it for changes so we can recompile
+npm run watch # Typescript must be compiled before we can run them
 
 # In a new tab
 npm run dev

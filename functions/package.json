@@ -1,7 +1,8 @@
 {
   "name": "functions",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc -w"
   },
   "engines": {
     "node": "14"
