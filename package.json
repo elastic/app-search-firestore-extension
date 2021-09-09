@@ -8,7 +8,8 @@
     "build": "cd functions && npm run build",
     "watch": "cd functions && npm run watch",
     "dev": "cd test_project && firebase ext:dev:emulators:start --test-config=firebase.json --test-params=test-params.env --project=pokemon --import seed",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -23,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/elastic/app-search-firestore-extension/issues"
   },
-  "homepage": "https://github.com/elastic/app-search-firestore-extension#readme"
+  "homepage": "https://github.com/elastic/app-search-firestore-extension#readme",
+  "devDependencies": {
+    "prettier": "2.3.2"
+  }
 }
