@@ -4,6 +4,9 @@
   "description": "An extension that syncs data from Google's Cloud Firestore to Elastic App Search.",
   "main": "functions/lib/index.js",
   "scripts": {
+    "postinstall": "cd functions && npm install",
+    "build": "cd functions && npm run build",
+    "dev": "cd test_project && firebase ext:dev:emulators:start --test-config=firebase.json --test-params=test-params.env --project=pokemon --import seed",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

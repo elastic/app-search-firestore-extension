@@ -24,7 +24,7 @@ firebase --open-sesame extdev
 
 ```shell
 nvm use
-cd functions && npm install
+npm install
 ```
 
 ## Set up connection to App Search before running locally
@@ -44,30 +44,30 @@ Copy `test-params.env.example` to `test-params.env` and replace the values with 
 We have a project configured for use in a local emulation already under `/test_project`. The project is called "pokemon" and uses data set. You can read more about running an emulated environment for testing here [here](https://firebase.google.com/docs/emulator-suite) and [here](https://firebase.google.com/docs/extensions/alpha/test#emulator).
 
 ```shell
-cd functions
 npm run build -- -w # Typescript must be compiled before we can run them, and we'll watch (-w) it for changes so we can recompile
 
 # In a new tab
-cd test_project
-firebase ext:dev:emulators:start --test-config=firebase.json --test-params=test-params.env --project=pokemon
+npm run dev
 ```
 
-You can also start the project with data pre-seeded for our pokemon data set. In that case, provide the `--import` flag.
+Running the `dev` commands runs the following under the hood:
 
-```shell
-cd test_project
+```
 firebase ext:dev:emulators:start --test-config=firebase.json --test-params=test-params.env --project=pokemon --import seed
 ```
 
-Navigate to http://localhost:4000/
-
 This will run your local emulator with the extension installed.
 
-`firebase.json` tells the emulator which emulators to use and which ports to start them on.
+Navigate to http://localhost:4000/
 
-TODO: Include seed file by using --import:
+Breaking that down:
 
-> If you're testing a Cloud Firestore trigger, it can be helpful to start the emulator with the --import flag, to automatically pre-populate the emulator with data.
+- `cd test_project` - We run the emulator from the `test_project` directory to keep all log files contained there. It's also where we store config for the emulator.
+- `ext:dev:emulators:start` - this is a command only available once `firebase --open-sesame extdev` is run.
+- `--test-config=firebase.json` - tells the emulator which emulators to use and which ports to start them on.
+- `--test-params=test-params.env` - This file is discussed above, it provides user configuration for testing.
+- `--project=pokemon` - For testing in the emulator, we assume we're working on a hypothetical `pokemon` data set.
+- `--import seed` - We stored `seed` data in a `seed` directory using the `export` command, this will reimport that data and populate our `pokemon` collection.
 
 ## Install and run in an actual cloud project:
 
@@ -83,8 +83,7 @@ Ex.
 
 ```
 # Make sure your extension has been rebuilt with your latest changes before publishing
-cd functions && npm run build
-cd ..
+npm run build
 
 # If you'd like to step through the configuration experience
 firebase ext:install . --project=pokemon
