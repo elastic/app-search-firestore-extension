@@ -20,3 +20,7 @@ export const getFirestore = (): FirebaseFirestore.Firestore => {
   });
   return admin.firestore();
 };
+
+export const parseIndexedFields = (indexedFields: string = ""): string[] => {
+  return indexedFields.split(",").map((f) => f.trim());
+};

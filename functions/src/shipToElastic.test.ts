@@ -5,7 +5,6 @@ describe("shipToElastic", () => {
 
   beforeAll(() => {
     originalValue = process.env.APP_SEARCH_ENGINE_NAME;
-    process.env.APP_SEARCH_ENGINE_NAME = "test_engine";
   });
 
   afterAll(() => {
@@ -21,22 +20,54 @@ describe("shipToElastic", () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    process.env.APP_SEARCH_ENGINE_NAME = "test_engine";
+    process.env.INDEXED_FIELDS = "foo,bar";
   });
 
-  it("if a document is created, it should index it to app search", async () => {
-    const change = {
+  const getDocCreated = (id: string, data: object) => {
+    return {
       before: { exists: false },
       after: {
-        id: "1",
+        id,
         exists: true,
-        data: () => {
-          return {
-            foo: "foo",
-            bar: "bar",
-          };
-        },
+        data: () => data,
       },
-    } as any;
+    };
+  };
+
+  const getDocUpdated = (id: string, before: object, after: object) => {
+    return {
+      before: {
+        id,
+        exists: true,
+        data: () => before,
+      },
+      after: {
+        id,
+        exists: true,
+        data: () => after,
+      },
+    };
+  };
+
+  const getDocDeleted = (id: string, data: object) => {
+    return {
+      before: {
+        id,
+        exists: true,
+        data: () => data,
+      },
+      after: {
+        exists: false,
+      },
+    };
+  };
+
+  it("if a document is created, it should index it to app search", async () => {
+    const change = getDocCreated("1", {
+      foo: "foo",
+      bar: "bar",
+    }) as any;
 
     await shipToElastic(change);
 
@@ -46,27 +77,16 @@ describe("shipToElastic", () => {
   });
 
   it("if a document is updated, it should index it to app search", async () => {
-    const change = {
-      before: {
-        id: "1",
-        exists: true,
-        data: () => {
-          return {
-            foo: "foo",
-          };
-        },
+    const change = getDocUpdated(
+      "1",
+      {
+        foo: "foo",
       },
-      after: {
-        id: "1",
-        exists: true,
-        data: () => {
-          return {
-            foo: "foo",
-            bar: "bar",
-          };
-        },
-      },
-    } as any;
+      {
+        foo: "foo",
+        bar: "bar",
+      }
+    ) as any;
 
     await shipToElastic(change);
 
@@ -75,25 +95,33 @@ describe("shipToElastic", () => {
     ]);
   });
 
-  it("if a document is deleted, it should deleted it from", async () => {
-    const change = {
-      before: {
-        id: "1",
-        exists: true,
-        data: () => {
-          return {
-            foo: "foo",
-            bar: "bar",
-          };
-        },
-      },
-      after: {
-        exists: false,
-      },
-    } as any;
+  it("if a document is deleted, it should delete it from app search", async () => {
+    const change = getDocDeleted("1", {
+      foo: "foo",
+      bar: "bar",
+    }) as any;
 
     await shipToElastic(change);
 
     expect(client.destroyDocuments).toHaveBeenCalledWith("test_engine", ["1"]);
+  });
+
+  describe("when indexing documents in app search", () => {
+    it("will only index the specified fields", async () => {
+      // So it should only add foo and bar to the indexed object because that's all we have specified here
+      process.env.INDEXED_FIELDS = "foo,bar";
+
+      const change = getDocCreated("1", {
+        foo: "foo",
+        bar: "bar",
+        baz: "baz",
+      }) as any;
+
+      await shipToElastic(change);
+
+      expect(client.indexDocuments).toHaveBeenCalledWith("test_engine", [
+        { id: "1", foo: "foo", bar: "bar" },
+      ]);
+    });
   });
 });

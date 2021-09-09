@@ -1,7 +1,8 @@
 import { QueryDocumentSnapshot } from "firebase-functions/v1/firestore";
+import { toAppSearch } from "../toAppSearch";
 
 import { getFirestore, getNewAppSearchClient } from "../utils";
-import { batchArray, prepareDocument } from "./utils";
+import { batchArray } from "./utils";
 
 const appSearchClient = getNewAppSearchClient();
 
@@ -11,12 +12,6 @@ const collectionPath = process.env.COLLECTION_PATH;
 
 if (!collectionPath) {
   throw Error("Please provide a COLLECTION_PATH environment variable");
-}
-
-const indexedFields = (process.env.INDEXED_FIELDS || "").split(",");
-
-if (indexedFields.length === 0 || indexedFields[0].length === 0) {
-  throw Error("Error reading INDEXED_FIELDS environment variable");
 }
 
 const batchSize = parseInt(process.env.BATCH_SIZE || "") || 50;
@@ -45,9 +40,10 @@ const main = async () => {
     throw e;
   }
 
-  preparedDocs = collectionDocs.map((document) =>
-    prepareDocument(document, indexedFields)
-  );
+  preparedDocs = collectionDocs.map((document) => ({
+    id: document.id,
+    ...toAppSearch(document.data()),
+  }));
 
   const documentBatches = batchArray(preparedDocs, batchSize);
 

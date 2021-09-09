@@ -1,4 +1,5 @@
 import * as functions from "firebase-functions";
+import { toAppSearch } from "./toAppSearch";
 
 import { getNewAppSearchClient } from "./utils";
 
@@ -15,7 +16,7 @@ export const handler = (client: any) => {
       client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
         {
           id: change.after.id,
-          ...change.after.data(),
+          ...toAppSearch(change.after.data()),
         },
       ]);
     } else if (change.after.exists === false) {
@@ -28,7 +29,7 @@ export const handler = (client: any) => {
       client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
         {
           id: change.after.id,
-          ...change.after.data(),
+          ...toAppSearch(change.after.data()),
         },
       ]);
     }
@@ -37,7 +38,6 @@ export const handler = (client: any) => {
 };
 
 // TODO handle nested fields
-// TODO handle only index specified fields: process.env.INDEXED_FIELDS
 // TODO index data with correct types? ... that depends on if we want filtering...
 // Note that in extensions, functions get declared slightly differently then typical extensions:
 // https://firebase.google.com/docs/extensions/alpha/construct-functions#firestore
