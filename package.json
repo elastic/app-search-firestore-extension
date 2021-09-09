@@ -1,25 +1,31 @@
 {
-  "name": "functions",
+  "name": "app-search-firestore-extension",
+  "version": "0.1.0",
+  "description": "An extension that syncs data from Google's Cloud Firestore to Elastic App Search.",
+  "main": "functions/lib/index.js",
   "scripts": {
-    "build": "tsc",
+    "postinstall": "cd functions && npm install",
+    "build": "cd functions && npm run build",
+    "watch": "cd functions && npm run watch",
+    "dev": "cd test_project && firebase ext:dev:emulators:start --test-config=firebase.json --test-params=test-params.env --project=pokemon --import seed",
+    "test": "cd functions && npm run test",
     "format": "prettier --write ."
   },
-  "engines": {
-    "node": "14"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elastic/app-search-firestore-extension.git"
   },
-  "bin": {
-    "import": "./functions/src/bin/import.js"
+  "keywords": [
+    "firebase",
+    "elastic"
+  ],
+  "author": "Elastic",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/elastic/app-search-firestore-extension/issues"
   },
-  "main": "functions/lib/index.js",
-  "dependencies": {
-    "@elastic/app-search-node": "^7.14.0",
-    "firebase-admin": "^9.8.0",
-    "firebase-functions": "^3.14.1"
-  },
+  "homepage": "https://github.com/elastic/app-search-firestore-extension#readme",
   "devDependencies": {
-    "firebase-functions-test": "^0.2.0",
-    "prettier": "2.3.2",
-    "typescript": "^3.8.0"
-  },
-  "private": true
+    "prettier": "2.3.2"
+  }
 }
