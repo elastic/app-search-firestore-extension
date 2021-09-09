@@ -3,7 +3,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest"
+    "test": "jest",
+    "watch-tests": "jest --watchAll"
   },
   "engines": {
     "node": "14"
