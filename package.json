@@ -9,6 +9,7 @@
     "watch": "cd functions && npm run watch",
     "dev": "cd test_project && firebase ext:dev:emulators:start --test-config=firebase.json --test-params=test-params.env --project=pokemon --import seed",
     "test": "cd functions && npm run test",
+    "watch-tests": "cd functions && npm run watch-tests",
     "format": "prettier --write ."
   },
   "repository": {
@@ -26,6 +27,7 @@
   },
   "homepage": "https://github.com/elastic/app-search-firestore-extension#readme",
   "devDependencies": {
+    "@types/jest": "^27.0.1",
     "prettier": "2.3.2"
   }
 }

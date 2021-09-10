@@ -1,5 +1,3 @@
-import { QueryDocumentSnapshot } from "firebase-functions/v1/firestore";
-
 export const batchArray = <T extends any>(
   array: Array<T>,
   size: number
@@ -13,17 +11,4 @@ export const batchArray = <T extends any>(
   }
 
   return batches;
-};
-
-export const prepareDocument = (
-  document: QueryDocumentSnapshot,
-  fields: string[]
-): Record<string, unknown> => {
-  const documentData = document.data();
-  const newDocument = fields.reduce((acc, field) => {
-    acc[field] = documentData[field];
-    return acc;
-  }, {} as Record<string, unknown>);
-  newDocument.id = document.id;
-  return newDocument;
 };
