@@ -37,8 +37,6 @@ export const handler = (client: any) => {
   };
 };
 
-// TODO handle nested fields
-// TODO index data with correct types? ... that depends on if we want filtering...
 // Note that in extensions, functions get declared slightly differently then typical extensions:
 // https://firebase.google.com/docs/extensions/alpha/construct-functions#firestore
 // Also note that tyipcally in a function you specify the path in the call to `document` like `/${config.collectionName}/{documentId}`.
