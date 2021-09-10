@@ -24,12 +24,12 @@ To run against a local Firebase emulator:
 
 ```
 FIRESTORE_EMULATOR_HOST=localhost:8081 \
-GCLOUD_PROJECT=test \
-COLLECTION_PATH=pokemon \
-INDEXED_FIELDS=name,number,url,image \
+GCLOUD_PROJECT=nationalparks \
+COLLECTION_PATH=nationalparks \
+INDEXED_FIELDS=title,description,visitors,acres,location,date_established \
 ENTERPRISE_SEARCH_URL=http://localhost:3002 \
 APP_SEARCH_API_KEY=private-asfdsaafdsagfsgfd \
-APP_SEARCH_ENGINE_NAME=pokemon \
+APP_SEARCH_ENGINE_NAME=nationalparks \
 node ./lib/bin/import.js
 ```
 
@@ -37,11 +37,11 @@ To run against a cloud Firebase instance:
 
 ```
 GOOGLE_APPLICATION_CREDENTIALS=~/Downloads/app-search-extension-testing-firebase-adminsdk-asdfsa-fdasfdsa.json \
-GCLOUD_PROJECT=test \
-COLLECTION_PATH=pokemon \
-INDEXED_FIELDS=name,number,url,image \
+GCLOUD_PROJECT=nationalparks \
+COLLECTION_PATH=nationalparks \
+INDEXED_FIELDS=title,description,visitors,acres,location,date_established \
 ENTERPRISE_SEARCH_URL=http://localhost:3002 \
 APP_SEARCH_API_KEY=private-asfdsaafdsagfsgfd \
-APP_SEARCH_ENGINE_NAME=pokemon \
+APP_SEARCH_ENGINE_NAME=nationalparks \
 node ./lib/bin/import.js
 ```
