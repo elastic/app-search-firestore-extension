@@ -202,10 +202,10 @@ describe("toAppSearch", () => {
         toAppSearch({
           baz: {
             _firestore: {
-              projectId: "pokemon",
+              projectId: "nationalparks",
             },
             _path: {
-              segments: ["pokemon", "123"],
+              segments: ["nationalparks", "123"],
             },
             _converter: {},
           },
@@ -215,10 +215,10 @@ describe("toAppSearch", () => {
         // unexpected for the user.
         baz: {
           _firestore: {
-            projectId: "pokemon",
+            projectId: "nationalparks",
           },
           _path: {
-            segments: ["pokemon", "123"],
+            segments: ["nationalparks", "123"],
           },
           _converter: {},
         },

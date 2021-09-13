@@ -30,7 +30,7 @@ npm install
 ## Set up connection to App Search before running locally
 
 1. Set up and run App Search locally.
-2. Create a new empty engine called 'pokemon'
+2. Create a new empty engine called 'nationalparks'
 3. In the next section, you'll add the connection details from this instance to `test-params.env`.
 
 ## Run locally inside of a test project (emulated environment)
@@ -41,7 +41,7 @@ For an extension in an emulated environment you don't actually collect configura
 
 Copy `test-params.env.example` to `test-params.env` and replace the values with your configuration.
 
-We have a project configured for use in a local emulation already under `/test_project`. The project is called "pokemon" and uses data set. You can read more about running an emulated environment for testing here [here](https://firebase.google.com/docs/emulator-suite) and [here](https://firebase.google.com/docs/extensions/alpha/test#emulator).
+We have a project configured for use in a local emulation already under `/test_project`. The project is called "nationalparks" and uses data set. You can read more about running an emulated environment for testing here [here](https://firebase.google.com/docs/emulator-suite) and [here](https://firebase.google.com/docs/extensions/alpha/test#emulator).
 
 ```shell
 npm run watch # Typescript must be compiled before we can run them
@@ -53,7 +53,7 @@ npm run dev
 Running the `dev` commands runs the following under the hood:
 
 ```
-firebase ext:dev:emulators:start --test-config=firebase.json --test-params=test-params.env --project=pokemon --import seed
+firebase ext:dev:emulators:start --test-config=firebase.json --test-params=test-params.env --project=nationalparks --import seed
 ```
 
 This will run your local emulator with the extension installed.
@@ -66,8 +66,8 @@ Breaking that down:
 - `ext:dev:emulators:start` - this is a command only available once `firebase --open-sesame extdev` is run.
 - `--test-config=firebase.json` - tells the emulator which emulators to use and which ports to start them on.
 - `--test-params=test-params.env` - This file is discussed above, it provides user configuration for testing.
-- `--project=pokemon` - For testing in the emulator, we assume we're working on a hypothetical `pokemon` data set.
-- `--import seed` - We stored `seed` data in a `seed` directory using the `export` command, this will reimport that data and populate our `pokemon` collection.
+- `--project=nationalparks` - For testing in the emulator, we assume we're working on a hypothetical `nationalparks` data set.
+- `--import seed` - We stored `seed` data in a `seed` directory using the `export` command, this will reimport that data and populate our `nationalparks` collection.
 
 ## Install and run in an actual cloud project:
 
@@ -75,9 +75,9 @@ https://firebase.google.com/docs/extensions/alpha/test#install-in-project
 
 This is most useful for demoing and stepping through the CLI install experience as an actual user would. It's a bit harder to use when you're developing the project as you have to push the changes to the extension every time you make them.
 
-If you don't have a "pokemon" project in your cloud Firebase yet, you would need to log into Firebase cloud and create one with the name and id "pokemon".
+If you don't have a "nationalparks" project in your cloud Firebase yet, you would need to log into Firebase cloud and create one with the name and id "nationalparks".
 
-Note that you can install this extension to ANY project you have in the cloud, not just the pokemon project that this emulated environment uses. Just specify a "--project" id in the CLI.
+Note that you can install this extension to ANY project you have in the cloud, not just the nationalparks project that this emulated environment uses. Just specify a "--project" id in the CLI.
 
 Ex.
 
@@ -86,16 +86,16 @@ Ex.
 npm run build
 
 # If you'd like to step through the configuration experience
-firebase ext:install . --project=pokemon
+firebase ext:install . --project=nationalparks
 
 # If you'd like to read configuration from your .env file
-firebase ext:install . --project=pokemon --params=test_project/test-params.env
+firebase ext:install . --project=nationalparks --params=test_project/test-params.env
 ```
 
 ## Testing the extension after the emulator is running
 
-In the Firestore emulator, create a collection called "pokemon" and add a document to it. That document should be syned to your App Search instance.
+In the Firestore emulator, create a collection called "nationalparks" and add a document to it. That document should be syned to your App Search instance.
 
 You can check the logs to see if it ran in the "Logs" tab of the emulator.
 
-Also, try querying App Search via the search endpoint: http://localhost:5001/pokemon/us-central1/search?query=pikachu
+Also, try querying App Search via the search endpoint: http://localhost:5001/nationalparks/us-central1/search?query=rocky

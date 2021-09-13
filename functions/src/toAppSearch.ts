@@ -2,10 +2,16 @@ import { parseIndexedFields } from "./utils";
 import { get } from "lodash";
 
 const isDate = (value: any): boolean =>
-  !!(value?._seconds && value?._nanoseconds);
+  !!value &&
+  !!value.hasOwnProperty &&
+  value.hasOwnProperty("_seconds") &&
+  value.hasOwnProperty("_nanoseconds");
 
 const isGeo = (value: any): boolean =>
-  !!(value?._latitude && value?._longitude);
+  !!value &&
+  !!value.hasOwnProperty &&
+  value.hasOwnProperty("_latitude") &&
+  value.hasOwnProperty("_longitude");
 
 export const toAppSearch = (
   data: Record<string, any> = {}
