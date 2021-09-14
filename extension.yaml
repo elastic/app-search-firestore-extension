@@ -106,7 +106,8 @@ params:
     label: Indexed fields
     description: >-
       Which fields from your collection would you like to sync to Elastic App Search? 
-      Only the fields provided will be searchable. Provide a comma separated list.
+      Only the fields provided will be indexed. Provide a comma separated list. Use dot notation
+      to specify fields nested in a map; "field.subField"
     example: producer,director,year
     required: true
 

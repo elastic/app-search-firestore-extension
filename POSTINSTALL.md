@@ -10,17 +10,35 @@ Learn more about writing a POSTINSTALL.md file in the docs:
 https://firebase.google.com/docs/extensions/alpha/create-user-docs#writing-postinstall
 -->
 
-# Using the extension
+## See it in action
 
-Make any create, update, or delete action in your Firestore, then visit your App Search instance at ${param:ENTERPRISE_SEARCH_URL} and see that your document has now been indexed.
+You can test out this extension right away!
 
-You can also visit ${function:search.url} to test out full-text search. Add a `q=<your query here>` to perform the search.
+1.  Go to your [Cloud Firestore dashboard](https://console.firebase.google.com/project/${param:PROJECT_ID}/firestore/data) in the Firebase console.
 
-## Import existing documents
+1.  If it doesn't already exist, create the collection you specified during installation: `${param:COLLECTION_PATH}`
 
-In order to index existing documents into App Search, you can use the following script.
+1.  Create a document in the collection that contains any of the fields you specified as indexed fields during installation: `${param:INDEXED_FIELDS}`.
 
-NOTE: In the future this will use an `npx` command with a published npm package called `app-search-firestore-extension`.
+1.  Go to the documents page of the Engine you created inside of your [App Search Dashboard](${param:ENTERPRISE_SEARCH_URL}/as#/engines/${param:APP_SEARCH_ENGINE_NAME}/documents). You should see the that document you just created listed on this page.
+
+1.  Quickly test out full-text search on your documents by querying the url ${function:search.url} with a "query" parameter.
+
+## Using the extension
+
+Whenever a document is created, updated, imported, or deleted in the specified collection, this extension sends that update to App Search. You can then run tull-text searches on this mirrored dataset.
+
+After documents are indexed into App Search, they will be searchable via the "search" Cloud Function.
+
+Note that the field types that you had specified in your source documents may not have been maintained when they were synced to App Search. At this point, you may want to set up the corresponding types in App Search. Scroll down to the "How are documents indexed to App Search?" to learn more.
+
+Note that this extension only listens for document changes in the collection, but not changes in any subcollection.
+
+## _(Optional)_ Import existing documents
+
+This extension only sends the content of documents that have been changed -- it does not export your full dataset of existing documents into App Search. So, to backfill your dataset with all the documents in your collection, you can run the import script provided by this extension.
+
+Before running the script, first follow the instructions [here](https://firebase.google.com/docs/admin/setup#initialize-sdk) to "To generate a private key file for your service account". Download it and save it somewhere as `serviceAccountKey.json`.
 
 ```shell
 GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/serviceAccountKey.json \
@@ -29,11 +47,206 @@ INDEXED_FIELDS=${param:INDEXED_FIELDS} \
 ENTERPRISE_SEARCH_URL=${param:ENTERPRISE_SEARCH_URL} \
 APP_SEARCH_API_KEY=${param:APP_SEARCH_API_KEY} \
 APP_SEARCH_ENGINE_NAME=${param:APP_SEARCH_ENGINE_NAME} \
-node ./lib/bin/import.js
+npx app-search-firestore-extension import
 ```
 
-You may also want to use this script to reindex your data. For instance, if you add an indexed field to your configuration, you'd want to run this script in order to re-index all data with the new field to App Search.
+## _(Optional)_ Configure App Search engine schema
 
-# Monitoring
+It is important to note that all data is initially indexed into App Search as text fields.
+
+This means that even if your field is a `timestamp` or `number` in Firestore, it will be indexed as text in App Search initially.
+
+This is fine for fields that you'd like to perform full-text search on. However, if you plan to something like sort numerically or implement range filters, you should first visit the Schema page for your Engine in the App Search Dashboard and select the correct types for your fields.
+
+You can read more about Schemas [here](https://www.elastic.co/guide/en/app-search/current/indexing-documents-guide.html#indexing-documents-guide-schema).
+
+## How documents are indexed in App Search
+
+It is important to note that not all [data types supported by Firestore](https://firebase.google.com/docs/firestore/manage-data/data-types) are compatible with the [data types supported by App Search[](https://www.elastic.co/guide/en/app-search/current/api-reference.html#overview-api-references-schema-design).
+
+Some types are supported in a 1-to-1 way: `text`, `number`.
+
+Others are supported, but formatted slightly differently: `timestamp`, `geo`.
+
+Others are simply not supported: `boolean`, `map`, `reference`.
+
+**It is also important to note that ONLY fields that you specify as Indexed Fields in this extension will be indexed into App Search**.
+
+For example, given the following document in Firestore:
+
+```json
+{
+  "id": "12345",
+  "name": "Rocky Mountain",
+  "nps_link": "https://www.nps.gov/romo/index.htm",
+  "states": ["Colorado"],
+  "visitors": 4517585,
+  "world_heritage_site": false,
+  "location": {
+    "_latitude": 41.12,
+    "_longitude": -71.34
+  },
+  "acres": 265795.2,
+  "square_km": 1075.6,
+  "date_established": {
+    "_seconds": 1631213624,
+    "_nanoseconds": 176000000
+  }
+}
+```
+
+If you've configured the plugin with indexed fields of `name,states`, then the document will be indexed into App Search as the following:
+
+```json
+{
+  "id": "12345",
+  "name": "Rocky Mountain",
+  "states": ["Colorado"]
+}
+```
+
+That means you could then perform a search with our search function, which would search over the `name` and `states` fields for results:
+
+```js
+const search = httpsCallable(functions, "search");
+search({ query: "rocky" });
+```
+
+### Similar types, formatted differently
+
+As mentioned above, types are somtimes formatted differently in App Search. So given the same example document above, but configured with `name,states,location,date_established` as the indexed fields, you'll see that the `location` and `date_established` fields have been formatted slightly differently.
+
+```json
+{
+  "id": "12345",
+  "name": "Rocky Mountain",
+  "states": ["Colorado"],
+  "location": "41.12,-71.34",
+  "date_established": "2021-09-09T18:53:44.000Z"
+}
+```
+
+We put them in this special format so that App Search is able to recognize them as the correct types. Unlike the name and states fields, you may want to do more than just searching on these fields. In fact, you most likely won't want to search on these fields at all; it's much more likely that you'll want to use these for things like filtering and sorting.
+
+### Types not supported by App Search
+
+There are some types of fields that ARE supported by Firestore, but not by App Search. So, when data is indexed, you may see that some data is dropped, or see that it is indexed in a way you may not have expected.
+
+**Maps**
+
+App Search does not support the concepts of maps. You may only have top-level fields. If you send a map to App Search, it will simply serialize your map and store it as a text:
+
+Firestore:
+
+```json
+{
+  "id": "12345",
+  "foo": {
+    "bar": {
+      "baz": "some value"
+    }
+  }
+}
+```
+
+App Search:
+
+```json
+{
+  "id": "12345",
+  "foo": {
+    "bar": "{\"bar\":{\"baz\":\"some value\"}}"
+  }
+}
+```
+
+**So are values in maps searchable? Yes, see the Nested Fields section for more info.**
+
+**Nested arrays**
+
+Nested arrays are not supported by App Search. Nested arrays will simply be dropped.
+
+Firestore:
+
+```json
+{
+  "id": "12345",
+  "foo": [["a"]]
+}
+```
+
+App Search:
+
+```json
+{
+  "id": "12345",
+  "foo": []
+}
+```
+
+**Reference**
+
+If you try to index a `reference` field to App Search, it will simply be serialized as if it were any other object, as serialized text:
+
+Firestore:
+
+```json
+{
+  "id": "12345",
+  "some_reference": {
+    "_firestore": {
+      "projectId": "national_parks"
+    },
+    "_path": {
+      "segments": ["national_parks", "123"]
+    },
+    "_converter": {}
+  }
+}
+```
+
+App Search:
+
+```json
+{
+  "id": "12345",
+  "some_reference": "{\"_firestore\":{\"projectId\":\"national_parks\"},\"_path\":{\"segments\":[\"national_parks\",\"123\"]},\"_converter\":{}}"
+}
+```
+
+### Nested fields
+
+While the `map` type is not supported in App Search, you _can_ index fields from within a `map` into App Search. It will convert them to a new top-level field.
+
+In the provided example, if you used dot notation to specify a sub field as indexed, it will index as follows into App Search.
+
+Indexed field: `name,foo.bar.baz`
+
+Firestore:
+
+```json
+{
+  "id": "12345",
+  "name": "test name",
+  "foo": {
+    "bar": {
+      "baz": "some value"
+    }
+  }
+```
+
+App Search:
+
+```json
+{
+  "id": "12345",
+  "name": "test name",
+  "foo__bar__baz": "some value"
+}
+```
+
+Please note that we are adding an additional top name field to your schema, in which we use "\_\_" as a delimiter. This could potentially conflict with other top-level field names, though that will most likely not be the case.
+
+## Monitoring
 
 As a best practice, you can [monitor the activity](https://firebase.google.com/docs/extensions/manage-installed-extensions#monitor) of your installed extension, including checks on its health, usage, and logs.
