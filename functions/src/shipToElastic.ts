@@ -10,36 +10,50 @@ export const handler = (client: any) => {
   return async (
     change: functions.Change<functions.firestore.DocumentSnapshot>
   ) => {
-    try {
-      if (change.before.exists === false) {
-        functions.logger.info(`Creating document`, { id: change.after.id });
+    if (change.before.exists === false) {
+      functions.logger.info(`Creating document`, { id: change.after.id });
+      try {
         client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
           {
             id: change.after.id,
             ...toAppSearch(change.after.data()),
           },
         ]);
-      } else if (change.after.exists === false) {
-        functions.logger.info(`Deleting document`, { id: change.before.id });
+      } catch (e) {
+        functions.logger.error(`Error while creating document`, {
+          id: change.after.id,
+        });
+        throw e;
+      }
+    } else if (change.after.exists === false) {
+      functions.logger.info(`Deleting document`, { id: change.before.id });
+      try {
         client.destroyDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
           change.before.id,
         ]);
-      } else {
-        functions.logger.info(`Updating document`, { id: change.after.id });
+      } catch (e) {
+        functions.logger.error(`Error while deleting document`, {
+          id: change.before.id,
+        });
+        throw e;
+      }
+    } else {
+      functions.logger.info(`Updating document`, { id: change.after.id });
+      try {
         client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
           {
             id: change.after.id,
             ...toAppSearch(change.after.data()),
           },
         ]);
+      } catch (e) {
+        functions.logger.error(`Error while updating document`, {
+          id: change.after.id,
+        });
+        throw e;
       }
-      return change.after;
-    } catch (e) {
-      functions.logger.error(`Error while shipping document to Elastic`, {
-        change: change,
-      });
-      throw e;
     }
+    return change.after;
   };
 };
 
