@@ -41,7 +41,7 @@ resources:
   - name: shipToElastic
     type: firebaseextensions.v1beta.function
     description: >-
-      Function triggered on Create, Update, or Delete of a document in the specified collection which syncs the change 
+      Function triggered on Create, Update, or Delete of a document in the specified collection which syncs the change
       to App Search.
     properties:
       # LOCATION is a user-configured parameter value specified by the user during installation.
@@ -59,6 +59,16 @@ resources:
     type: firebaseextensions.v1beta.function
     description: >-
       Function that exposes an endpoint which lets users search their collection that has been syned to Elastic App Search.
+    properties:
+      # LOCATION is a user-configured parameter value specified by the user during installation.
+      location: ${LOCATION}
+      # https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations.functions#EventTrigger
+      httpsTrigger: {}
+      runtime: "nodejs14"
+  - name: querySuggestion
+    type: firebaseextensions.v1beta.function
+    description: >-
+      Function that exposes an endpoint which lets users query for suggestions based on their collection that has been syned to Elastic App Search.
     properties:
       # LOCATION is a user-configured parameter value specified by the user during installation.
       location: ${LOCATION}
@@ -105,7 +115,7 @@ params:
   - param: INDEXED_FIELDS
     label: Indexed fields
     description: >-
-      Which fields from your collection would you like to sync to Elastic App Search? 
+      Which fields from your collection would you like to sync to Elastic App Search?
       Only the fields provided will be indexed. Provide a comma separated list. Use dot notation
       to specify fields nested in a map; "field.subField"
     example: producer,director,year
