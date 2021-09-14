@@ -99,3 +99,16 @@ In the Firestore emulator, create a collection called "nationalparks" and add a 
 You can check the logs to see if it ran in the "Logs" tab of the emulator.
 
 Also, try querying App Search via the search endpoint: http://localhost:5001/nationalparks/us-central1/search?query=rocky
+
+## Publishing
+
+The npm script and extension should maintain the same version number and should always be published together to maintain compatibility.
+
+To publish the npm script:
+
+```
+# Update the version number in functions/package.json
+cd functions
+npm run build
+npm publish
+```
