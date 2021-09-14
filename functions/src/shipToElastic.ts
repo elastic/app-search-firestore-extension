@@ -10,6 +10,9 @@ export const handler = (client: any) => {
   return async (
     change: functions.Change<functions.firestore.DocumentSnapshot>
   ) => {
+    functions.logger.info(`Received request to ship to ship to Elastic`, {
+      change,
+    });
     if (change.before.exists === false) {
       functions.logger.info(`Creating document`, { id: change.after.id });
       try {
