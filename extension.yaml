@@ -75,6 +75,16 @@ resources:
       # https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations.functions#EventTrigger
       httpsTrigger: {}
       runtime: "nodejs14"
+  - name: click
+    type: firebaseextensions.v1beta.function
+    description: >-
+      Function that exposes an endpoint which lets users track clicks for a collection that has been syned to Elastic App Search.
+    properties:
+      # LOCATION is a user-configured parameter value specified by the user during installation.
+      location: ${LOCATION}
+      # https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations.functions#EventTrigger
+      httpsTrigger: {}
+      runtime: "nodejs14"
 
 # In the `params` field, set up your extension's user-configured parameters.
 # Learn more in the docs: https://firebase.google.com/docs/extensions/alpha/ref-extension-yaml#params-field
