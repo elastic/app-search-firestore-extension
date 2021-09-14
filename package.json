@@ -1,8 +1,4 @@
 {
-  "name": "app-search-firestore-extension",
-  "version": "0.1.0",
-  "description": "An extension that syncs data from Google's Cloud Firestore to Elastic App Search.",
-  "main": "functions/lib/index.js",
   "scripts": {
     "postinstall": "cd functions && npm install",
     "build": "cd functions && npm run build",
@@ -12,22 +8,9 @@
     "watch-tests": "cd functions && npm run watch-tests",
     "format": "prettier --write ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/elastic/app-search-firestore-extension.git"
-  },
-  "keywords": [
-    "firebase",
-    "elastic"
-  ],
-  "author": "Elastic",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/elastic/app-search-firestore-extension/issues"
-  },
-  "homepage": "https://github.com/elastic/app-search-firestore-extension#readme",
   "devDependencies": {
     "@types/jest": "^27.0.1",
     "prettier": "2.3.2"
-  }
+  },
+  "private": true
 }

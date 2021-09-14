@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { QueryDocumentSnapshot } from "firebase-functions/v1/firestore";
 import { toAppSearch } from "../toAppSearch";
 

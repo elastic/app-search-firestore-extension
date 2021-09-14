@@ -1,6 +1,12 @@
-# Setup
+## Running this script
 
-## Building the script
+This script uses environment variables that correspond to the configuration that you've set in your installed extension.
+
+See the POSTINSTALL.md for instructions on running this script to backfill and reindex data from a Firestore colletion to an App Search engine.
+
+## Developing
+
+### Building the script
 
 All setup must be run from the directory `/app-search-firestore-extension/functions`
 
