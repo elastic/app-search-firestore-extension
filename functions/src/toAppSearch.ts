@@ -23,7 +23,7 @@ export const toAppSearch = (
     if (fieldValue === undefined) return acc;
 
     // App search doesn't support dot notation so we need to join them with "__"
-    const processedFieldName = fieldName.split(".").join("__");
+    const processedFieldName = fieldName.split(".").join("__").toLowerCase();
 
     if (isDate(fieldValue)) {
       return {

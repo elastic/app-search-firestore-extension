@@ -31,6 +31,21 @@ describe("toAppSearch", () => {
     });
   });
 
+  it("should lowercase field names before indexing", () => {
+    process.env.INDEXED_FIELDS = "Foo,Bar";
+
+    expect(
+      toAppSearch({
+        Foo: "foo",
+        Bar: "bar",
+        Baz: "baz",
+      })
+    ).toEqual({
+      foo: "foo",
+      bar: "bar",
+    });
+  });
+
   it("will index nested fields that are specified as a separate field in app search", () => {
     process.env.INDEXED_FIELDS = "foo,bar.baz.qux";
 

@@ -134,6 +134,15 @@ To reindex data, use the steps listed above for "Backfill or import existing doc
 
 ## How documents are indexed in App Search
 
+The TLDR for this section is:
+
+- Field names will be lowercased before being indexed, so the field name in app search may differ from the field name in Firestore.
+- `text` and `number` type fields are indexed as-is to App Search.
+- `geo` and `timestamp` fields are formatted slightly differently when indexed.
+- `map`, `boolean`, and `reference` are not supported by App Search, they will be indexed as text.
+- nested arrays are not supported at all and will be dropped before indexing in App Search.
+- While `map`s are not supported, you _can_ specify that fields within a map get indexed as top level fields in App Search.
+
 It is important to note that not all [data types supported by Firestore](https://firebase.google.com/docs/firestore/manage-data/data-types) are compatible with the [data types supported by App Search](https://www.elastic.co/guide/en/app-search/current/api-reference.html#overview-api-references-schema-design).
 
 Some types are supported in a 1-to-1 way: `text`, `number`.
