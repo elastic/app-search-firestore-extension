@@ -10,28 +10,51 @@ export const handler = (client: any) => {
   return async (
     change: functions.Change<functions.firestore.DocumentSnapshot>
   ) => {
+    functions.logger.info(`Received request to ship to ship to Elastic`, {
+      change,
+    });
     if (change.before.exists === false) {
-      // TODO Consider log levels... functions.logger.info("Hello logs!", { structuredData: true });
-      console.log(`Creating document: ${change.after.id}`);
-      client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
-        {
+      functions.logger.info(`Creating document`, { id: change.after.id });
+      try {
+        client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+          {
+            id: change.after.id,
+            ...toAppSearch(change.after.data()),
+          },
+        ]);
+      } catch (e) {
+        functions.logger.error(`Error while creating document`, {
           id: change.after.id,
-          ...toAppSearch(change.after.data()),
-        },
-      ]);
+        });
+        throw e;
+      }
     } else if (change.after.exists === false) {
-      console.log(`Deleting document: ${change.before.id}`);
-      client.destroyDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
-        change.before.id,
-      ]);
+      functions.logger.info(`Deleting document`, { id: change.before.id });
+      try {
+        client.destroyDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+          change.before.id,
+        ]);
+      } catch (e) {
+        functions.logger.error(`Error while deleting document`, {
+          id: change.before.id,
+        });
+        throw e;
+      }
     } else {
-      console.log(`Updating document: ${change.after.id}`);
-      client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
-        {
+      functions.logger.info(`Updating document`, { id: change.after.id });
+      try {
+        client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+          {
+            id: change.after.id,
+            ...toAppSearch(change.after.data()),
+          },
+        ]);
+      } catch (e) {
+        functions.logger.error(`Error while updating document`, {
           id: change.after.id,
-          ...toAppSearch(change.after.data()),
-        },
-      ]);
+        });
+        throw e;
+      }
     }
     return change.after;
   };
