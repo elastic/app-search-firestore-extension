@@ -28,13 +28,77 @@ You can test out this extension right away!
 
 Whenever a document is created, updated, imported, or deleted in the specified collection, this extension sends that update to App Search. You can then run tull-text searches on this mirrored dataset.
 
-After documents are indexed into App Search, they will be searchable via the "search" Cloud Function.
-
-Note that the field types that you had specified in your source documents may not have been maintained when they were synced to App Search. At this point, you may want to set up the corresponding types in App Search. Scroll down to the "How are documents indexed to App Search?" to learn more.
+After documents are indexed into App Search, they will be searchable via the "search" Cloud Function. You can call the function directly over HTTP or use one of the [SDKs](https://firebase.google.com/docs/firestore/client/libraries).
 
 Note that this extension only listens for document changes in the collection, but not changes in any subcollection.
 
-## _(Optional)_ Import existing documents
+### Simple searching
+
+Example of simple text search over all indexed fields using the Web SDK:
+
+```
+import {
+  getFunctions,
+  httpsCallable,
+} from "firebase/functions";
+const functions = getFunctions();
+const search = httpsCallable(functions, "search");
+const searchResults = await search({ query: "rocky" });
+```
+
+### Advanced searching
+
+You have the entire App Search [Search API](https://www.elastic.co/guide/en/app-search/current/search.html) available to you. That means you can sort, apply filters, pick which fields to search, boost relevance for matches on particular fields, calculate facets, highlight matched text in search results, etc.
+
+```
+import {
+  getFunctions,
+  httpsCallable,
+} from "firebase/functions";
+const functions = getFunctions();
+const search = httpsCallable(functions, "search");
+const searchResults = await search({
+  query: "rocky",
+  result_fields: {
+    title: {
+      raw: {}
+    },
+    description: {
+      raw: {
+        size: 50
+      }
+    },
+    sort: {
+      title: "desc"
+    },
+    filters : {
+      states: [ "California", "Alaska" ]
+    },
+    facets: {
+      states: [
+        {
+          type: "value",
+          name: "top-five-states",
+          sort: { count: "desc" },
+          size: 5
+        }
+      ]
+    },
+    boosts: {
+      world_heritage_site: [
+        {
+          type: "value",
+          value: "true",
+          operation: "multiply",
+          factor: 10
+        }
+      ]
+    }
+  }
+});
+```
+
+## _(Optional)_ Backfill or import existing documents
 
 This extension only sends the content of documents that have been changed -- it does not export your full dataset of existing documents into App Search. So, to backfill your dataset with all the documents in your collection, you can run the import script provided by this extension.
 
@@ -47,7 +111,7 @@ INDEXED_FIELDS=${param:INDEXED_FIELDS} \
 ENTERPRISE_SEARCH_URL=${param:ENTERPRISE_SEARCH_URL} \
 APP_SEARCH_API_KEY=${param:APP_SEARCH_API_KEY} \
 APP_SEARCH_ENGINE_NAME=${param:APP_SEARCH_ENGINE_NAME} \
-npx app-search-firestore-extension import
+npx @elastic/app-search-firestore-extension import
 ```
 
 ## _(Optional)_ Configure App Search engine schema
@@ -56,13 +120,21 @@ It is important to note that all data is initially indexed into App Search as te
 
 This means that even if your field is a `timestamp` or `number` in Firestore, it will be indexed as text in App Search initially.
 
-This is fine for fields that you'd like to perform full-text search on. However, if you plan to something like sort numerically or implement range filters, you should first visit the Schema page for your Engine in the App Search Dashboard and select the correct types for your fields.
+This is fine for fields that you'd like to perform full-text search on. However, if you plan to something like sort numerically or implement range filters when calling `search`, you should first visit the Schema page for your Engine in the App Search Dashboard and select the correct types for your fields.
 
 You can read more about Schemas [here](https://www.elastic.co/guide/en/app-search/current/indexing-documents-guide.html#indexing-documents-guide-schema).
 
+## _(Optional)_ Reindex
+
+There may be times where you want to reindex all of your documents from this collection to App Search.
+
+For instance, if you change the "indexed fields" configuration in this extension, you should then run a reindex in order to make sure that the changes are picked up in App Search.
+
+To reindex data, use the steps listed above for "Backfill or import existing documents".
+
 ## How documents are indexed in App Search
 
-It is important to note that not all [data types supported by Firestore](https://firebase.google.com/docs/firestore/manage-data/data-types) are compatible with the [data types supported by App Search[](https://www.elastic.co/guide/en/app-search/current/api-reference.html#overview-api-references-schema-design).
+It is important to note that not all [data types supported by Firestore](https://firebase.google.com/docs/firestore/manage-data/data-types) are compatible with the [data types supported by App Search](https://www.elastic.co/guide/en/app-search/current/api-reference.html#overview-api-references-schema-design).
 
 Some types are supported in a 1-to-1 way: `text`, `number`.
 
