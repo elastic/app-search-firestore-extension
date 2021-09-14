@@ -10,30 +10,36 @@ export const handler = (client: any) => {
   return async (
     change: functions.Change<functions.firestore.DocumentSnapshot>
   ) => {
-    if (change.before.exists === false) {
-      // TODO Consider log levels... functions.logger.info("Hello logs!", { structuredData: true });
-      console.log(`Creating document: ${change.after.id}`);
-      client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
-        {
-          id: change.after.id,
-          ...toAppSearch(change.after.data()),
-        },
-      ]);
-    } else if (change.after.exists === false) {
-      console.log(`Deleting document: ${change.before.id}`);
-      client.destroyDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
-        change.before.id,
-      ]);
-    } else {
-      console.log(`Updating document: ${change.after.id}`);
-      client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
-        {
-          id: change.after.id,
-          ...toAppSearch(change.after.data()),
-        },
-      ]);
+    try {
+      if (change.before.exists === false) {
+        functions.logger.info(`Creating document`, { id: change.after.id });
+        client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+          {
+            id: change.after.id,
+            ...toAppSearch(change.after.data()),
+          },
+        ]);
+      } else if (change.after.exists === false) {
+        functions.logger.info(`Deleting document`, { id: change.before.id });
+        client.destroyDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+          change.before.id,
+        ]);
+      } else {
+        functions.logger.info(`Updating document`, { id: change.after.id });
+        client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+          {
+            id: change.after.id,
+            ...toAppSearch(change.after.data()),
+          },
+        ]);
+      }
+      return change.after;
+    } catch (e) {
+      functions.logger.error(`Error while shipping document to Elastic`, {
+        change: change,
+      });
+      throw e;
     }
-    return change.after;
   };
 };
 
