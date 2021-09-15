@@ -92,6 +92,10 @@ firebase ext:install . --project=nationalparks
 firebase ext:install . --project=nationalparks --params=test_project/test-params.env
 ```
 
+## To import National Parks dataset into an actual cloud project:
+
+Use the script located in the `/load-data` directory. There is a README there describing how to use it.
+
 ## Testing the extension after the emulator is running
 
 In the Firestore emulator, create a collection called "nationalparks" and add a document to it. That document should be syned to your App Search instance.
