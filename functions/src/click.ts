@@ -2,6 +2,9 @@ import * as functions from "firebase-functions";
 
 import { getNewAppSearchLowLevelClient } from "./utils";
 
+// the engines/<engine_name>/click endpoint is not available in the
+// current version of the main node client, so we use the low-level client
+// https://github.com/elastic/app-search-node#for-app-search-apis-not-available-in-this-client
 const appSearchLowLevelClient = getNewAppSearchLowLevelClient();
 
 export const click = functions.https.onRequest(async (request, response) => {
