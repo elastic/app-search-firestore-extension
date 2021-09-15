@@ -14,6 +14,7 @@ After pulling this project source locally, follow these steps:
 
 ```shell
 npm install -g firebase-tools
+npm install
 firebase login
 firebase ext:install . --project=<ID of your project>
 ```
