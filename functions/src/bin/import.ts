@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { QueryDocumentSnapshot } from "firebase-functions/v1/firestore";
 import { toAppSearch } from "../toAppSearch";
 
@@ -59,7 +57,14 @@ const main = async () => {
         `Submitting  ${documentBatch.length} documents as a part of batch ${index}`
       );
 
-      await appSearchClient.indexDocuments(appSearchEngineName, documentBatch);
+      const response = await appSearchClient.indexDocuments(
+        appSearchEngineName,
+        documentBatch
+      );
+
+      response.forEach((r: { errors: string[] }) =>
+        r.errors.forEach(console.error)
+      );
     } catch (e) {
       console.error(
         `Error submitting batch ${index} to ${appSearchEngineName}`
