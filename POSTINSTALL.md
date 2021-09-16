@@ -98,6 +98,11 @@ const searchResults = await search({
 });
 ```
 
+In addition to searching, there are two additional functions available that you may need for advanced search.
+
+`querySuggestion` - Use this to implement [Query Suggestions](https://www.elastic.co/guide/en/app-search/current/query-suggestions-guide.html).
+`click` - [Track user clicks](https://www.elastic.co/guide/en/app-search/current/clickthrough.html) on search results, which will power your App Search Analytics Dashboard to make [intelligent relevance choices](https://www.elastic.co/guide/en/app-search/current/analytics-tags-guide.html).
+
 ## _(Optional)_ Backfill or import existing documents
 
 This extension only sends the content of documents that have been changed -- it does not export your full dataset of existing documents into App Search. So, to backfill your dataset with all the documents in your collection, you can run the import script provided by this extension.
