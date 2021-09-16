@@ -46,22 +46,109 @@ describe("toAppSearch", () => {
     });
   });
 
-  it("will index nested fields that are specified as a separate field in app search", () => {
-    process.env.INDEXED_FIELDS = "foo,bar.baz.qux";
+  it("will strip characters that are not alpha-numeric or underscores", () => {
+    process.env.INDEXED_FIELDS = "a大,a1-b-c,d e_f,大";
 
     expect(
       toAppSearch({
-        foo: "foo",
-        bar: {
-          baz: {
-            qux: "test",
-          },
-        },
+        a大: "a大",
+        "a1-b-c": "a1-b-c",
+        "d e_f": "d e_f",
+        大: "大",
       })
     ).toEqual({
-      foo: "foo",
-      // App search doesn't support dot notation so we need to join them with "__"
-      bar__baz__qux: "test",
+      a: "a大",
+      a1bc: "a1-b-c",
+      de_f: "d e_f",
+      // 大 is ommited entirely because it serialized to an empty string
+    });
+  });
+
+  it("what happens when multiple fields end up processing to the same field name?", () => {
+    process.env.INDEXED_FIELDS = "A,a,a大";
+
+    expect(
+      toAppSearch({
+        A: "A",
+        a: "a",
+        a大: "a大",
+      })
+    ).toEqual({
+      a: "a大",
+    });
+  });
+
+  describe("renaming", () => {
+    it("should let users specify alternate names for fields using the `::` syntax", () => {
+      process.env.INDEXED_FIELDS = "A,a::a1,a大::a2";
+
+      expect(
+        toAppSearch({
+          A: "A",
+          a: "a",
+          a大: "a大",
+        })
+      ).toEqual({
+        a: "A",
+        a1: "a",
+        a2: "a大",
+      });
+    });
+
+    it("will look for the literal field first, before interpreting `::` as renaming syntax", () => {
+      process.env.INDEXED_FIELDS = "A,a::a1,a大::a2";
+
+      expect(
+        toAppSearch({
+          A: "A",
+          "a::a1": "a",
+          a大: "a大",
+        })
+      ).toEqual({
+        a: "A",
+        aa1: "a",
+        a2: "a大",
+      });
+    });
+  });
+
+  describe("nested fields", () => {
+    it("will index nested fields that are specified as a separate field in app search", () => {
+      process.env.INDEXED_FIELDS = "foo,bar__baz__qux";
+
+      expect(
+        toAppSearch({
+          foo: "foo",
+          bar: {
+            baz: {
+              qux: "test",
+            },
+          },
+        })
+      ).toEqual({
+        foo: "foo",
+        bar__baz__qux: "test",
+      });
+    });
+
+    it("will look for the literal field first, before looking for the nested field", () => {
+      process.env.INDEXED_FIELDS = "foo,bar__baz__qux";
+
+      expect(
+        toAppSearch({
+          bar__baz__qux: "bar__baz__qux",
+          foo: "foo",
+          bar: {
+            baz: {
+              qux: "qux",
+            },
+          },
+        })
+      ).toEqual({
+        foo: "foo",
+        // App search doesn't support dot notation so we need to join them with "__"
+        bar__baz__qux: "bar__baz__qux",
+      });
     });
   });
 

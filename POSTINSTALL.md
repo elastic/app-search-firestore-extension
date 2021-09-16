@@ -136,12 +136,12 @@ To reindex data, use the steps listed above for "Backfill or import existing doc
 
 The TLDR for this section is:
 
-- Field names will be lowercased before being indexed, so the field name in app search may differ from the field name in Firestore.
 - `text` and `number` type fields are indexed as-is to App Search.
 - `geo` and `timestamp` fields are formatted slightly differently when indexed.
 - `map`, `boolean`, and `reference` are not supported by App Search, they will be indexed as text.
 - nested arrays are not supported at all and will be dropped before indexing in App Search.
-- While `map`s are not supported, you _can_ specify that fields within a map get indexed as top level fields in App Search.
+- While `map`s are not supported, you _can_ specify that fields within a map get indexed as top level fields in App Search, using the `__` syntax when configuring indexed fields
+- App Search only supports lower-cased alphanumeric characters and underscores ("\_") in field names. This extension will rename fields that don't match, or you can use the `::` syntax to specify what it is renamed to when configuring indexed fields.
 
 It is important to note that not all [data types supported by Firestore](https://firebase.google.com/docs/firestore/manage-data/data-types) are compatible with the [data types supported by App Search](https://www.elastic.co/guide/en/app-search/current/api-reference.html#overview-api-references-schema-design).
 
@@ -299,9 +299,9 @@ App Search:
 
 While the `map` type is not supported in App Search, you _can_ index fields from within a `map` into App Search. It will convert them to a new top-level field.
 
-In the provided example, if you used dot notation to specify a sub field as indexed, it will index as follows into App Search.
+In the provided example, if you used underscores to specify a sub field as indexed, it will index as follows into App Search.
 
-Indexed field: `name,foo.bar.baz`
+Indexed field: `name,foo__bar__baz`
 
 Firestore:
 
@@ -327,6 +327,62 @@ App Search:
 ```
 
 Please note that we are adding an additional top name field to your schema, in which we use "\_\_" as a delimiter. This could potentially conflict with other top-level field names, though that will most likely not be the case.
+
+### Field name compatibility and renaming
+
+App Search only supports lower-cased alphanumeric characters and underscores ("\_") in field names. Field values that do not match will be renamed to match:
+
+Indexed field: `name,foo__bar__baz`
+
+Firestore:
+
+```json
+{
+  "id": "12345",
+  "a大": "a大",
+  "A1-b-c": "A1-b-c",
+  "d e_f": "d e_f",
+  "大": "大"
+}
+```
+
+App Search:
+
+```json
+{
+  "id": "12345",
+  "a": "a大",
+  "a1bc": "A1-b-c",
+  "de_f": "d e_f"
+  // 大 is ommited entirely because it serialized to an empty string
+}
+```
+
+As this could have underirable effects we allow renaming of fields by using the `::` when specifying indexed fields:
+
+Indexed field: `你好::hello,爱::love,幸福::happiness`
+
+Firestore:
+
+```json
+{
+  "id": "12345",
+  "你好": "你好",
+  "爱": "爱",
+  "幸福": "幸福"
+}
+```
+
+App Search:
+
+```json
+{
+  "id": "12345",
+  "hello": "你好",
+  "love": "爱",
+  "happiness": "幸福"
+}
+```
 
 ## Monitoring
 

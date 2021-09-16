@@ -19,11 +19,29 @@ export const toAppSearch = (
   const indexedFields = parseIndexedFields(process.env.INDEXED_FIELDS);
 
   return Object.entries(indexedFields).reduce((acc, [_, fieldName]) => {
-    const fieldValue = get(data, fieldName);
+    let fieldValue;
+    let parsedFieldName = fieldName.split("::")[0];
+    let renameTo = fieldName.split("::")[1];
+
+    // If a user specified 'a::1' and there was literally an 'a::1' field, then dont attempt any renaming
+    if (data.hasOwnProperty(fieldName)) {
+      fieldValue = data[fieldName];
+      parsedFieldName = fieldName;
+      renameTo = "";
+    } else if (data.hasOwnProperty(parsedFieldName)) {
+      fieldValue = data[parsedFieldName];
+    } else {
+      fieldValue = get(data, parsedFieldName.split("__").join("."));
+    }
+
     if (fieldValue === undefined) return acc;
 
-    // App search doesn't support dot notation so we need to join them with "__"
-    const processedFieldName = fieldName.split(".").join("__").toLowerCase();
+    // App Search only supports lowercased alpha numeric names or underscores
+    const processedFieldName = (renameTo || parsedFieldName)
+      .replace(/[^A-Za-z0-9_]/g, "")
+      .toLowerCase();
+
+    if (processedFieldName === "") return acc;
 
     if (isDate(fieldValue)) {
       return {
