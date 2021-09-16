@@ -1,3 +1,5 @@
+import * as functions from "firebase-functions";
+
 import { parseIndexedFields } from "./utils";
 import { get } from "lodash";
 
@@ -41,7 +43,12 @@ export const toAppSearch = (
       .replace(/[^A-Za-z0-9_]/g, "")
       .toLowerCase();
 
-    if (processedFieldName === "") return acc;
+    if (processedFieldName === "") {
+      functions.logger.warn(
+        `Skipped indexing a field named ${parsedFieldName}. Attempted to rename the field to remove special characters which resulted in an empty string. Please use the "::" syntax to rename this field. Example: ${parsedFieldName}::some_other_field_name.`
+      );
+      return acc;
+    }
 
     if (isDate(fieldValue)) {
       return {
