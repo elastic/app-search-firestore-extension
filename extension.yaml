@@ -126,9 +126,9 @@ params:
     label: Indexed fields
     description: >-
       Which fields from your collection would you like to sync to Elastic App Search?
-      Only the fields provided will be indexed. Provide a comma separated list. Use dot notation
-      to specify fields nested in a map; "field.subField"
-    example: producer,director,year
+      Only the fields provided will be indexed. Provide a comma separated list. [Specify fields nested](https://github.com/elastic/app-search-firestore-extension/blob/master/POSTINSTALL.md#nested-fields) in maps with underscores; "field__subField".
+      [Specify new names for fields](https://github.com/elastic/app-search-firestore-extension/blob/master/POSTINSTALL.md#field-name-compatibility-and-renaming) in App Search using a double colon: "PreviousName::newname".
+    example: producer,director__name,year
     required: true
 
   - param: LOCATION
