@@ -22,86 +22,13 @@ You can test out this extension right away!
 
 1.  Go to the documents page of the Engine you created inside of your [App Search Dashboard](${param:ENTERPRISE_SEARCH_URL}/as#/engines/${param:APP_SEARCH_ENGINE_NAME}/documents). You should see the that document you just created listed on this page.
 
-1.  Quickly test out full-text search on your documents by querying the url ${function:search.url} with a "query" parameter.
-
 ## Using the extension
 
 Whenever a document is created, updated, imported, or deleted in the specified collection, this extension sends that update to App Search. You can then run tull-text searches on this mirrored dataset.
 
-After documents are indexed into App Search, they will be searchable via the "search" Cloud Function. You can call the function directly over HTTP or use one of the [SDKs](https://firebase.google.com/docs/firestore/client/libraries).
+After documents are indexed into App Search, you'll have the complete App Search [Search API](https://www.elastic.co/guide/en/app-search/current/search.html) available to you for searching.
 
 Note that this extension only listens for document changes in the collection, but not changes in any subcollection.
-
-### Simple searching
-
-Example of simple text search over all indexed fields using the Web SDK:
-
-```
-import {
-  getFunctions,
-  httpsCallable,
-} from "firebase/functions";
-const functions = getFunctions();
-const search = httpsCallable(functions, "search");
-const searchResults = await search({ query: "rocky" });
-```
-
-### Advanced searching
-
-You have the entire App Search [Search API](https://www.elastic.co/guide/en/app-search/current/search.html) available to you. That means you can sort, apply filters, pick which fields to search, boost relevance for matches on particular fields, calculate facets, highlight matched text in search results, etc.
-
-```
-import {
-  getFunctions,
-  httpsCallable,
-} from "firebase/functions";
-const functions = getFunctions();
-const search = httpsCallable(functions, "search");
-const searchResults = await search({
-  query: "rocky",
-  result_fields: {
-    title: {
-      raw: {}
-    },
-    description: {
-      raw: {
-        size: 50
-      }
-    },
-    sort: {
-      title: "desc"
-    },
-    filters : {
-      states: [ "California", "Alaska" ]
-    },
-    facets: {
-      states: [
-        {
-          type: "value",
-          name: "top-five-states",
-          sort: { count: "desc" },
-          size: 5
-        }
-      ]
-    },
-    boosts: {
-      world_heritage_site: [
-        {
-          type: "value",
-          value: "true",
-          operation: "multiply",
-          factor: 10
-        }
-      ]
-    }
-  }
-});
-```
-
-In addition to searching, there are two additional functions available that you may need for advanced search.
-
-`querySuggestion` - Use this to implement [Query Suggestions](https://www.elastic.co/guide/en/app-search/current/query-suggestions-guide.html).
-`click` - [Track user clicks](https://www.elastic.co/guide/en/app-search/current/clickthrough.html) on search results, which will power your App Search Analytics Dashboard to make [intelligent relevance choices](https://www.elastic.co/guide/en/app-search/current/analytics-tags-guide.html).
 
 ## _(Optional)_ Backfill or import existing documents
 
@@ -191,12 +118,7 @@ If you've configured the plugin with indexed fields of `name,states`, then the d
 }
 ```
 
-That means you could then perform a search with our search function, which would search over the `name` and `states` fields for results:
-
-```js
-const search = httpsCallable(functions, "search");
-search({ query: "rocky" });
-```
+That means you could then perform a search with the App Search Search API over the `name` and `states` fields for results.
 
 ### Similar types, formatted differently
 
