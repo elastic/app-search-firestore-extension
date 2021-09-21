@@ -23,7 +23,7 @@ Since you'll likely have documents created in your collection already, this exte
 
 ### Searching
 
-Once your data synced to App Search, we provide a search API as an [http callable function](https://firebase.google.com/docs/functions/http-events). This API proxies the App Search [Search API](https://www.elastic.co/guide/en/app-search/current/search.html), so you'll have the ability to craft very specific search queries as well as build [faceted search filters](https://www.elastic.co/guide/en/app-search/current/facets.html).
+Once your data synced to App Search, you'll be able to use the App Search [Search API](https://www.elastic.co/guide/en/app-search/current/search.html), which provides not only the ability to perform full-text search, but everything you need to build a complete search experience; facets, filters, click analytics, query suggestion, relevance tuning and much more.
 
 ## Additional setup
 
