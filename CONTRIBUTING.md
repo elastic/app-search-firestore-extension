@@ -116,3 +116,16 @@ cd functions
 npm run build
 npm publish
 ```
+
+To publish the extension:
+[Docs](https://firebase.google.com/docs/extensions/alpha/share)
+
+```
+# Update the version in extension.yaml
+# Create a new entry for this version in CHANGELOG.md
+firebase ext:dev:publish elastic/firestore-search-with-elastic
+```
+
+Make sure you are logged into the firebase CLI with your `elastic.co` account.
+
+Note that this plugin is linked to the `elastic-official` project in the `elastic.co` organization in Google Cloud.
