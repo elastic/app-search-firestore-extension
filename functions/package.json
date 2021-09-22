@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "An extension that syncs data from Google's Cloud Firestore to Elastic App Search.",
   "scripts": {
+    "prepare": "npm run build",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
