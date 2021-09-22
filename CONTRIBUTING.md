@@ -123,7 +123,7 @@ To publish the extension:
 ```
 # Update the version in extension.yaml
 # Create a new entry for this version in CHANGELOG.md
-firebase ext:dev:publish elastic/firestore-search-with-elastic
+firebase ext:dev:publish elastic/firestore-elastic-app-search
 ```
 
 Make sure you are logged into the firebase CLI with your `elastic.co` account.

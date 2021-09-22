@@ -1,7 +1,7 @@
 # Learn detailed information about the fields of an extension.yaml file in the docs:
 # https://firebase.google.com/docs/extensions/alpha/ref-extension-yaml
 
-name: firestore-search-with-elastic # Identifier for your extension
+name: firestore-elastic-app-search # Identifier for your extension
 version: 0.3.0 # Follow semver versioning
 specVersion: v1beta # Version of the Firebase Extensions specification
 
