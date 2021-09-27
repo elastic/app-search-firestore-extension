@@ -19,7 +19,7 @@ author:
   url: https://www.elastic.co/
 
 # Public URL for the source code of your extension
-sourceUrl: https://github.com/elastic/firebase-app-search-extension
+sourceUrl: https://github.com/elastic/app-search-firestore-extension
 
 # Specify whether a paid-tier billing plan is required to use your extension.
 # Learn more in the docs: https://firebase.google.com/docs/extensions/alpha/ref-extension-yaml#billing-required-field
