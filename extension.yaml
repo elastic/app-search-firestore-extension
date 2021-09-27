@@ -78,6 +78,7 @@ params:
 
   - param: APP_SEARCH_API_KEY
     label: Elastic App Search private API key
+    type: secret
     description: >-
       A "private" API key from your Elastic App Search deployment, with access to the specified engine.
       Found in the "Credentials" section.
