@@ -52,7 +52,7 @@ It is important to note that all data is initially indexed into App Search as te
 
 This means that even if your field is a `timestamp` or `number` in Firestore, it will be indexed as text in App Search initially.
 
-This is fine for fields that you'd like to perform full-text search on. However, if you plan to something like sort numerically or implement range filters when calling `search`, you should first visit the Schema page for your Engine in the App Search Dashboard and select the correct types for your fields.
+This is fine for fields that you'd like to perform full-text search on. However, if you plan to do something like sort numerically or implement range filters when calling `search`, you should first visit the Schema page for your Engine in the App Search Dashboard and select the correct types for your fields.
 
 You can read more about Schemas [here](https://www.elastic.co/guide/en/app-search/current/indexing-documents-guide.html#indexing-documents-guide-schema).
 
