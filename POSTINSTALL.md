@@ -10,7 +10,7 @@ Learn more about writing a POSTINSTALL.md file in the docs:
 https://firebase.google.com/docs/extensions/alpha/create-user-docs#writing-postinstall
 -->
 
-## See it in action
+### See it in action
 
 You can test out this extension right away!
 
@@ -26,7 +26,7 @@ You can test out this extension right away!
 
 4.  Go to the documents page of the Engine you created inside of your [App Search Dashboard](${param:ENTERPRISE_SEARCH_URL}/as#/engines/${param:APP_SEARCH_ENGINE_NAME}/documents). You should see the that document you just created listed on this page.
 
-## Using the extension
+### Using the extension
 
 Whenever a document is created, updated, imported, or deleted in the specified collection, this extension sends that update to App Search. You can then run tull-text searches on this mirrored dataset.
 
@@ -34,7 +34,7 @@ After documents are indexed into App Search, you'll have the complete App Search
 
 Note that this extension only listens for document changes in the collection, but not changes in any subcollection.
 
-## _(Optional)_ Backfill or import existing documents
+### _(Optional)_ Backfill or import existing documents
 
 This extension only sends the content of documents that have been changed -- it does not export your full dataset of existing documents into App Search. So, to backfill your dataset with all the documents in your collection, you can run the import script provided by this extension.
 
@@ -50,17 +50,17 @@ APP_SEARCH_ENGINE_NAME=${param:APP_SEARCH_ENGINE_NAME} \
 npx @elastic/app-search-firestore-extension import
 ```
 
-## _(Optional)_ Configure App Search engine schema
+### _(Optional)_ Configure App Search engine schema
 
 It is important to note that all data is initially indexed into App Search as text fields.
 
 This means that even if your field is a `timestamp` or `number` in Firestore, it will be indexed as text in App Search initially.
 
-This is fine for fields that you'd like to perform full-text search on. However, if you plan to something like sort numerically or implement range filters when calling `search`, you should first visit the Schema page for your Engine in the App Search Dashboard and select the correct types for your fields.
+This is fine for fields that you'd like to perform full-text search on. However, if you plan to do something like sort numerically or implement range filters when calling `search`, you should first visit the Schema page for your Engine in the App Search Dashboard and select the correct types for your fields.
 
 You can read more about Schemas [here](https://www.elastic.co/guide/en/app-search/current/indexing-documents-guide.html#indexing-documents-guide-schema).
 
-## _(Optional)_ Reindex
+### _(Optional)_ Reindex
 
 There may be times where you want to reindex all of your documents from this collection to App Search.
 
@@ -68,7 +68,7 @@ For instance, if you change the "indexed fields" configuration in this extension
 
 To reindex data, use the steps listed above for "Backfill or import existing documents".
 
-## How documents are indexed in App Search
+### How documents are indexed in App Search
 
 The TLDR for this section is:
 
@@ -124,7 +124,7 @@ If you've configured the plugin with indexed fields of `name,states`, then the d
 
 That means you could then perform a search with the App Search Search API over the `name` and `states` fields for results.
 
-### Similar types, formatted differently
+#### Similar types, formatted differently
 
 As mentioned above, types are somtimes formatted differently in App Search. So given the same example document above, but configured with `name,states,location,date_established` as the indexed fields, you'll see that the `location` and `date_established` fields have been formatted slightly differently.
 
@@ -140,7 +140,7 @@ As mentioned above, types are somtimes formatted differently in App Search. So g
 
 We put them in this special format so that App Search is able to recognize them as the correct types. Unlike the name and states fields, you may want to do more than just searching on these fields. In fact, you most likely won't want to search on these fields at all; it's much more likely that you'll want to use these for things like filtering and sorting.
 
-### Types not supported by App Search
+#### Types not supported by App Search
 
 There are some types of fields that ARE supported by Firestore, but not by App Search. So, when data is indexed, you may see that some data is dropped, or see that it is indexed in a way you may not have expected.
 
@@ -226,7 +226,7 @@ App Search:
 }
 ```
 
-### Nested fields
+#### Nested fields
 
 While the `map` type is not supported in App Search, you _can_ index fields from within a `map` into App Search. It will convert them to a new top-level field.
 
@@ -259,7 +259,7 @@ App Search:
 
 Please note that we are adding an additional top name field to your schema, in which we use "\_\_" as a delimiter. This could potentially conflict with other top-level field names, though that will most likely not be the case.
 
-### Field name compatibility and renaming
+#### Field name compatibility and renaming
 
 App Search only supports lower-cased alphanumeric characters and underscores ("\_") in field names. Field values that do not match will be renamed to match:
 
@@ -315,6 +315,6 @@ App Search:
 }
 ```
 
-## Monitoring
+### Monitoring
 
 As a best practice, you can [monitor the activity](https://firebase.google.com/docs/extensions/manage-installed-extensions#monitor) of your installed extension, including checks on its health, usage, and logs.

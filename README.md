@@ -6,9 +6,11 @@ Out-of-the-box, Cloud Firestore provides no mechanism for full-text search on da
 
 ## Install
 
-This extension should be installed directly from the [Firebase Extension library](https://firebase.google.com/products/extensions).
+### From the web
 
-For testing purposes, it can also be installed directly from source to a project in your Firebase using the [Firebase CLI](https://firebase.google.com/docs/cli).
+Visit the following link: https://console.firebase.google.com/project/_/extensions/install?ref=elastic/firestore-elastic-app-search@0.3.0
+
+### From source
 
 After pulling this project source locally, follow these steps:
 
