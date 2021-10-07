@@ -1,3 +1,7 @@
+## Version 0.4.1
+
+fixed - Fixed API key in backport command in POSTINSTALL.md
+
 ## Version 0.4.0
 
 feature - Use "secret" type for private API key configuration (#27)
