@@ -41,11 +41,11 @@ This extension only sends the content of documents that have been changed -- it 
 Before running the script, first follow the instructions [here](https://firebase.google.com/docs/admin/setup#initialize-sdk) to "To generate a private key file for your service account". Download it and save it somewhere as `serviceAccountKey.json`.
 
 ```shell
-GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/serviceAccountKey.json \
+GOOGLE_APPLICATION_CREDENTIALS= /path/to/your/serviceAccountKey.json \
 COLLECTION_PATH=${param:COLLECTION_PATH} \
 INDEXED_FIELDS=${param:INDEXED_FIELDS} \
 ENTERPRISE_SEARCH_URL=${param:ENTERPRISE_SEARCH_URL} \
-APP_SEARCH_API_KEY=${param:APP_SEARCH_API_KEY} \
+APP_SEARCH_API_KEY= { your private app search API key here } \
 APP_SEARCH_ENGINE_NAME=${param:APP_SEARCH_ENGINE_NAME} \
 npx @elastic/app-search-firestore-extension import
 ```
