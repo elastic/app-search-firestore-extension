@@ -16,7 +16,7 @@ export const handler = (client: any) => {
     if (change.before.exists === false) {
       functions.logger.info(`Creating document`, { id: change.after.id });
       try {
-        client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+        await client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
           {
             id: change.after.id,
             ...toAppSearch(change.after.data()),
@@ -31,7 +31,7 @@ export const handler = (client: any) => {
     } else if (change.after.exists === false) {
       functions.logger.info(`Deleting document`, { id: change.before.id });
       try {
-        client.destroyDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+        await client.destroyDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
           change.before.id,
         ]);
       } catch (e) {
@@ -43,7 +43,7 @@ export const handler = (client: any) => {
     } else {
       functions.logger.info(`Updating document`, { id: change.after.id });
       try {
-        client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
+        await client.indexDocuments(process.env.APP_SEARCH_ENGINE_NAME, [
           {
             id: change.after.id,
             ...toAppSearch(change.after.data()),
