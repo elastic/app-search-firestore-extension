@@ -95,6 +95,24 @@ describe("shipToElastic", () => {
     ]);
   });
 
+  it("if a document is updated but fields from INDEXED_FIELDS have not changed, it should not index it to app search", async () => {
+    const change = getDocUpdated(
+      "1",
+      {
+        notFoo: "foo",
+      },
+      {
+        notFoo: "foo",
+        notBar: "bar",
+      }
+    ) as any;
+
+    const result = await shipToElastic(change);
+
+    expect(client.indexDocuments).not.toHaveBeenCalled();
+    expect(result).toEqual(null);
+  });
+
   it("if a document is deleted, it should delete it from app search", async () => {
     const change = getDocDeleted("1", {
       foo: "foo",
