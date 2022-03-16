@@ -1,6 +1,6 @@
 {
   "name": "@elastic/app-search-firestore-extension",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "An extension that syncs data from Google's Cloud Firestore to Elastic App Search.",
   "scripts": {
     "prepare": "npm run build",
