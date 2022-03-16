@@ -7,7 +7,7 @@ import DocumentSnapshot = firestore.DocumentSnapshot;
 
 const appSearchClient = getNewAppSearchClient();
 
-// We separate and curry this function from shipToElastic so we can test with less mocking
+// We separate and curry this function from shipToElastic, so we can test with less mocking
 export const handler = (client: any) => {
   return async (change: Change<DocumentSnapshot>) => {
     logger.info(`Received request to ship to ship to Elastic`, {
