@@ -21,7 +21,7 @@ You can test out this extension right away!
 3.  Create a document in the collection that contains any of the fields you specified as indexed fields during installation:
 
 ```js
-`${param:INDEXED_FIELDS}`
+${param:INDEXED_FIELDS}
 ```
 
 4.  Go to the documents page of the Engine you created inside of your [App Search Dashboard](${param:ENTERPRISE_SEARCH_URL}/as#/engines/${param:APP_SEARCH_ENGINE_NAME}/documents). You should see the that document you just created listed on this page.
