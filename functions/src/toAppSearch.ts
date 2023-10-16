@@ -1,19 +1,43 @@
 import * as functions from "firebase-functions";
 
-import { parseIndexedFields } from "./utils";
-import { get } from "lodash";
+import {parseIndexedFields} from "./utils";
+import {get} from "lodash";
 
-const isDate = (value: any): boolean =>
+interface FirestoreTimestamp {
+  _seconds: number;
+  _nanoseconds: number;
+}
+
+interface FirestoreGeoPoint {
+  _latitude: number;
+  _longitude: number;
+}
+
+interface FirestoreReference {
+  _path: {
+    segments: string[];
+  }
+}
+
+const isDate = (value: any): value is FirestoreTimestamp =>
   !!value &&
   !!value.hasOwnProperty &&
   value.hasOwnProperty("_seconds") &&
   value.hasOwnProperty("_nanoseconds");
 
-const isGeo = (value: any): boolean =>
+const isGeoPoint = (value: any): value is FirestoreGeoPoint =>
   !!value &&
   !!value.hasOwnProperty &&
   value.hasOwnProperty("_latitude") &&
   value.hasOwnProperty("_longitude");
+
+const isReference = (value: any): value is FirestoreReference =>
+  !!value &&
+  !!value.hasOwnProperty &&
+  value.hasOwnProperty("_path") &&
+  value._path.hasOwnProperty('segments') &&
+  Array.isArray(value._path.segments) &&
+  typeof value._path.segments[0] === 'string';
 
 export const toAppSearch = (
   data: Record<string, any> = {}
@@ -59,10 +83,17 @@ export const toAppSearch = (
       };
     }
 
-    if (isGeo(fieldValue)) {
+    if (isGeoPoint(fieldValue)) {
       return {
         ...acc,
         [processedFieldName]: `${fieldValue._latitude},${fieldValue._longitude}`,
+      };
+    }
+
+    if (isReference(fieldValue)) {
+      return {
+        ...acc,
+        [processedFieldName]: fieldValue._path.segments.join('/'),
       };
     }
 
@@ -80,10 +111,17 @@ export const toAppSearch = (
             ];
           }
 
-          if (isGeo(arrayFieldValue)) {
+          if (isGeoPoint(arrayFieldValue)) {
             return [
               ...acc,
               `${arrayFieldValue._latitude},${arrayFieldValue._longitude}`,
+            ];
+          }
+
+          if (isReference(arrayFieldValue)) {
+            return [
+              ...acc,
+              arrayFieldValue._path.segments.join('/'),
             ];
           }
 

@@ -313,17 +313,8 @@ describe("toAppSearch", () => {
           },
         })
       ).toEqual({
-        // References will end up getting converted to serialized JSON objects of the following format, this is probably
-        // unexpected for the user.
-        baz: {
-          _firestore: {
-            projectId: "nationalparks",
-          },
-          _path: {
-            segments: ["nationalparks", "123"],
-          },
-          _converter: {},
-        },
+        // References will be converted to a string containing the path to the document.
+        baz: 'nationalparks/123',
       });
     });
   });
