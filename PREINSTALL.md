@@ -11,6 +11,8 @@ The Elastic App Search Firestore extension enables comprehensive [full-text sear
 
 This extension indexes and syncs the documents in a Cloud Firestore collection to an [Elastic App Search](https://www.elastic.co/app-search?ultron=firebase-extension&blade=preinstall&hulk=product) deployment by creating a Cloud Function which syncs changes in your collection on any [write event](https://firebase.google.com/docs/functions/firestore-events#function_triggers) (any time you create, update, or a delete a document).
 
+**NOTE:** This extension is no longer maintained. We encourage the community use the open and supported [connectors framework](https://www.elastic.co/guide/en/enterprise-search/current/connectors.html#connectors-overview-framework) to build an Elasticsearch connector for integration with Google Cloud Firestore.
+
 #### Elastic App Search
 
 Elastic App Search provides a comprehensive API for implementing common search patterns like auto-completed search suggestions and faceted filter navigation. You'll also have tooling so your team can easily track and tweak search relevance based on usage data.
